@@ -1,5 +1,21 @@
 # Verification report
 
+## GitHub publication preparation
+
+Verified October 31, 2026 (Asia/Manila), before publishing the branches.
+
+- Strict TypeScript validation: passed.
+- Complete unit suite: 158 passed.
+- Production build: passed.
+- Complete production browser suite: 64 passed in 4.4 minutes with one worker, including real Report Studio PDF/Word downloads, worksheets, theme/focus/responsive checks and rendered motion.
+- All preserved history and tracked source were scanned for credential patterns and accidentally tracked generated files: no findings. Fifteen local-environment/cache/credential ignore cases were verified.
+- Application source, tests, entry point and dependency manifests are unchanged from approved Report Studio commit `2c7ff92` during repository preparation. Changes are limited to repository documentation, curated screenshots and ignore rules.
+- README screenshot/document links were checked. The three screenshots show actual application UI with the fixed public example, without personal files or credentials.
+- The official remote was verified empty before setup. Local baseline `b2cd578` remains on `main`; the Report Studio history remains on `feature/report-studio`. No history rewrite, force push, automatic merge, release tag or deployment is part of this setup.
+- No application license was selected or added; existing bundled font licenses are preserved. The v1.0.0 review/merge and release gates are documented in `RELEASE_CHECKLIST.md`.
+
+The sections below preserve prior implementation and document-verification history.
+
 ## Report Studio — latest revision
 
 Verified October 31, 2026 (Asia/Manila).
