@@ -51,6 +51,18 @@ Body text is 16px; instructions and controls use 15–16px; waveform labels use 
 
 See `READABILITY.md` for the audit, screenshot review and zoom-verification scope.
 
+## Report Studio
+
+Generate a score, then choose **Export Report** in Score controls. Report Studio uses the last generated sequence and the current NRZ-I / Differential Manchester initial conditions, including when the draft has since been edited. It does not use animated webpage frames or require you to enter the sequence again.
+
+Choose PDF or editable Word (.docx), Compact / Detailed / Study layout, organization by bit range or encoding scheme, and all eight or a custom selection of schemes. Toggle explanations, per-bit tables, original bit-position rows and grayscale printing. Study adds per-bit reasoning from the actual calculation. **Report content** also offers a practice worksheet with empty grids and output cells, plus a separate calculated answer key. Worksheet continuation prompts omit computed answers.
+
+The preview is explicitly **representative**, with the actual calculated page plan and navigable page boundaries. PDF text metrics and Word reflow can differ from the preview. On small screens the print page scrolls inside its own region. The report settings and preview support both app themes; exports use a high-contrast print palette independent of Day/Night.
+
+PDFs use native vector lines and selectable text on A4 landscape pages. Word reports contain real editable headings, paragraphs and tables, SVG diagrams with high-resolution PNG fallbacks, explicit page breaks, headers and page-number fields. No Microsoft Office installation is required to generate a Word file. All generation happens locally in the browser; no sequence data is uploaded. Closing the studio during generation cancels delivery, and failed generation does not produce a partial download.
+
+Readable bit capacity is calculated from available page width, layout spacing and the selected output-label widths at the print font size. Defaults are at most 19 / 16 / 14 bits per Compact / Detailed / Study segment. The complete stream is encoded first, then sliced on whole-bit boundaries, preserving state and absolute positions. See `REPORT_STUDIO.md` for architecture, verification, sample outputs and limitations.
+
 ## Encoding conventions
 
 Voltages are normalized to +1, 0 and -1; they are not measured physical voltage values. Initial high / low means +V / -V for the stateful polar schemes. The small lead-in at the left of each stateful waveform is the state immediately before bit 1.
@@ -118,6 +130,7 @@ src/
     LearningGuide.tsx  Progressive how-to and graph-reading explanations
     ScoreToolbar.tsx   Sticky scheme, playback and inspection navigation
     ThemeToggle.tsx    Accessible Sun/Moon theme control
+  report/              Shared model, pagination, graphics, PDF, DOCX and studio UI
   App.tsx              Application state and composition
   styles.css           Original Kinetic Signal Score design
   ux.css               Semantic themes, interaction and responsive refinements
@@ -153,10 +166,10 @@ Tests include the verified example sequence; all zeros; all ones; alternating bi
 
 - Maximum 128 bits, minimum one bit. Very long scores scroll inside the comparison region.
 - The inspection panel expands a scheme within the aligned score. It is not a separate fullscreen chart.
-- Theme preference persists when browser storage is available. Refreshing resets the composition, not the saved theme. File export and online hosting are outside this local application.
+- Theme preference persists when browser storage is available. Refreshing resets the composition, not the saved theme. Report export uses the last generated score; online hosting is outside this local application.
 - The entire generated waveform is mathematically available before animation. Playback illustrates encoding, rather than simulating voltage propagation or real hardware timing.
 - Node/npm are needed to install and develop the source. The built site needs only a static HTTP server.
 
 ## Typography and dependencies
 
-Manrope Variable and DM Mono are bundled locally via Fontsource. Their SIL Open Font License texts are included under `public/licenses/`. Application dependencies are React, React DOM and GSAP; developer tooling is Vite, TypeScript, Vitest, Playwright and formatting tooling. No component framework is used.
+Manrope Variable and DM Mono are bundled locally via Fontsource. Their SIL Open Font License texts are included under `public/licenses/`. Application dependencies are React, React DOM, GSAP, jsPDF and docx; developer tooling is Vite, TypeScript, Vitest, Playwright, PDF/ZIP test inspectors and formatting tooling. Export libraries load only when their format is requested. No component framework is used.

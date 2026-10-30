@@ -104,3 +104,7 @@ Laptop layouts were checked at 1366×768, 1440×900 and 1920×1080 in both theme
 ## Explicit numerical length control
 
 The “Number of bits” field uses a square, fully bordered raised surface, 12–18px padding and a prominent 32–36px value with a persistent “bits” unit. Semantic Day/Night tokens keep the container distinct from the page. Hover changes its border/surface; keyboard focus outlines the complete field; invalid input receives an error-colored border and inset edge. A confirmed length uses a dashed border and selection surface beside the explicit Edit length action. On narrow screens, the field and Set/Edit length button share a two-column row; the unit remains visible. Validation and the existing length-first state transitions are unchanged.
+
+## Report Studio and print
+
+The existing score gains an Export Report action and a native modal studio. The studio inherits semantic Day/Night surfaces, typography, controls and focus tokens. Its two-column settings/preview workspace becomes a vertically scrolling composition on mobile; the printed page scrolls independently to preserve diagram readability. Print is deliberately separate: A4 landscape, restrained warm plotting surfaces, ink/vermilion/olive, fine grids, standard editorial sans typography and monospace data. Layout and font metrics determine bit capacity; the data and complete-stream continuity remain unchanged. Representative previews state their limits. Worksheets reuse the same axes/ranges with empty grids and blank answer cells.

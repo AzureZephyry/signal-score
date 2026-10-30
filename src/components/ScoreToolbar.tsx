@@ -10,6 +10,7 @@ interface Props {
   activeScheme: SchemeId;
   onScheme: (id: SchemeId) => void;
   onEdit: () => void;
+  onExport: () => void;
   onSelect: (index: number) => void;
   onClear: () => void;
   scrollable: boolean;
@@ -22,6 +23,7 @@ export function ScoreToolbar({
   activeScheme,
   onScheme,
   onEdit,
+  onExport,
   onSelect,
   onClear,
   scrollable,
@@ -81,6 +83,9 @@ export function ScoreToolbar({
         </button>
         <button className="button light toolbar-edit" onClick={onEdit}>
           Edit input <span aria-hidden="true">↑</span>
+        </button>
+        <button className="button accent toolbar-export" onClick={onExport}>
+          Export Report <span aria-hidden="true">↗</span>
         </button>
       </nav>
       <div className="transport">
