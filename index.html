@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#eeece3" />
+    <style>
+      html {
+        background: #eeece3;
+        color-scheme: light;
+      }
+      html[data-theme="night"] {
+        background: #242722;
+        color-scheme: dark;
+      }
+    </style>
+    <script>
+      (() => {
+        let theme = window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "night"
+          : "day";
+        try {
+          const saved = localStorage.getItem("signal-score-theme");
+          if (saved === "day" || saved === "night") theme = saved;
+        } catch {}
+        document.documentElement.dataset.theme = theme;
+        document.documentElement.style.colorScheme =
+          theme === "night" ? "dark" : "light";
+        document
+          .querySelector('meta[name="theme-color"]')
+          .setAttribute("content", theme === "night" ? "#242722" : "#eeece3");
+      })();
+    </script>
+    <meta
+      name="description"
+      content="An interactive digital signal laboratory for exploring how binary information becomes electrical waveforms."
+    />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <title>Signal / Score — Digital Signal Laboratory</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
