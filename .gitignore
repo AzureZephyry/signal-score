@@ -6,3 +6,28 @@ evidence/
 *.zip
 .DS_Store
 /submission/
+
+# Local environment, credentials and machine-specific configuration
+.env
+.env.*
+!.env.example
+*.local
+.npmrc
+.netrc
+credentials.json
+secrets*.json
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Tooling, caches and editor state
+.tools/
+.cache/
+.vite/
+coverage/
+*.log
+*.tsbuildinfo
+.idea/
+.vscode/
+Thumbs.db

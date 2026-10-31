@@ -1,3 +1,4 @@
+import { ReportStudio } from "./report/ReportStudio";
 import { GraphGuide } from "./components/LearningGuide";
 import {
   useEffect,
@@ -32,6 +33,7 @@ export default function App() {
     "Step 1 of 3 · Choose and confirm your bit-stream length.",
   );
   const [generation, setGeneration] = useState(0);
+  const [studioOpen, setStudioOpen] = useState(false);
   const [initials, setInitials] = useState({
     "nrz-i": 1 as InitialLevel,
     differential: 1 as InitialLevel,
@@ -480,6 +482,10 @@ export default function App() {
                 activeScheme={activeScheme}
                 onScheme={jumpToScheme}
                 onEdit={returnToInput}
+                onExport={() => {
+                  playback.pause();
+                  setStudioOpen(true);
+                }}
                 onSelect={inspectBit}
                 onClear={() => {
                   setSelected(null);
@@ -572,6 +578,13 @@ export default function App() {
           </p>
         </details>
       </main>
+      {studioOpen && (
+        <ReportStudio
+          sequence={sequence}
+          signals={signals}
+          onClose={() => setStudioOpen(false)}
+        />
+      )}
       <footer>
         <a href="#" className="brand">
           SIGNAL / SCORE
