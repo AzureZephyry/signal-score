@@ -1,5 +1,17 @@
 import { test, expect, type Page } from "@playwright/test";
 const sample = "111001011000";
+async function expectScoreFocus(page: Page) {
+  const compact = await page
+    .locator(".score-toolbar")
+    .evaluate(
+      (el) =>
+        getComputedStyle(el).getPropertyValue("--compact-controls").trim() ===
+        "1",
+    );
+  await expect(
+    page.locator(compact ? "#score-controls" : "#comparison-title"),
+  ).toBeFocused();
+}
 async function compose(page: Page, value = sample) {
   await page.goto("/");
   await page
@@ -11,7 +23,7 @@ async function compose(page: Page, value = sample) {
   ).toBeFocused();
   await page.getByLabel("Binary sequence", { exact: true }).fill(value);
   await page.getByLabel("Binary sequence", { exact: true }).press("Enter");
-  await expect(page.locator("#comparison-title")).toBeFocused();
+  await expectScoreFocus(page);
   await page
     .getByRole("button", { name: "Show all bits", exact: true })
     .click();
@@ -143,7 +155,7 @@ test("keyboard workflow, useful validation, immediate results, and non-destructi
   await expect(page.getByRole("alert")).toContainText("exactly 12");
   await bits.fill(sample);
   await bits.press("Enter");
-  await expect(page.locator("#comparison-title")).toBeFocused();
+  await expectScoreFocus(page);
   await page
     .getByRole("button", { name: "Show all bits", exact: true })
     .click();
@@ -175,7 +187,7 @@ test("keyboard workflow, useful validation, immediate results, and non-destructi
   ).toHaveText(Array(12).fill("lo"));
 });
 
-test("sticky scheme navigation reaches every scheme and returns focus to editing", async ({
+test("scheme navigation respects sticky desktop and flowing mobile controls", async ({
   page,
 }) => {
   await compose(page);
@@ -192,6 +204,9 @@ test("sticky scheme navigation reaches every scheme and returns focus to editing
     await page.getByLabel("Jump to scheme", { exact: true }).selectOption(id);
     const positions = await page.evaluate(
       (id) => ({
+        sticky:
+          getComputedStyle(document.querySelector(".score-toolbar")!)
+            .position === "sticky",
         toolbar: document
           .querySelector(".score-toolbar")!
           .getBoundingClientRect().bottom,
@@ -199,9 +214,17 @@ test("sticky scheme navigation reaches every scheme and returns focus to editing
       }),
       id,
     );
-    expect(positions.row).toBeGreaterThanOrEqual(positions.toolbar - 1);
-    expect(positions.row - positions.toolbar).toBeLessThan(30);
-    await expect(page.locator(".toolbar-edit")).toBeInViewport();
+    if (positions.sticky) {
+      expect(positions.row).toBeGreaterThanOrEqual(positions.toolbar - 1);
+      expect(positions.row - positions.toolbar).toBeLessThan(30);
+      await expect(page.locator(".toolbar-edit")).toBeInViewport();
+    } else {
+      expect(positions.row).toBeGreaterThanOrEqual(0);
+      expect(positions.row).toBeLessThan(30);
+      await expect(page.locator(`#scheme-${id}`)).toBeFocused();
+      await page.locator(`#row-${id} .score-controls-link`).click();
+      await expect(page.locator("#score-controls")).toBeFocused();
+    }
   }
   await page
     .getByRole("button", { name: "Previous scheme", exact: true })
@@ -349,10 +372,12 @@ for (const mode of ["day", "night"] as const) {
           ".theme-toggle,.initial-control select,.play-button,.toolbar-edit,.scheme-navigation .nav-arrow,.bit-navigation button,.kinetic-digit,.timeline-scrub input",
         )
         .evaluateAll((els) =>
-          els.map((el) => ({
-            height: el.getBoundingClientRect().height,
-            width: el.getBoundingClientRect().width,
-          })),
+          els
+            .filter((el) => el.getClientRects().length > 0)
+            .map((el) => ({
+              height: el.getBoundingClientRect().height,
+              width: el.getBoundingClientRect().width,
+            })),
         );
       expect(
         targets.every((target) => target.height >= 44 && target.width >= 44),
