@@ -43,13 +43,15 @@ export function ScoreToolbar({
   return (
     <div
       className="score-toolbar"
+      id="score-controls"
+      tabIndex={-1}
       ref={toolbarRef}
       role="region"
       aria-label="Score controls"
     >
       <nav className="scheme-navigation" aria-label="Encoding schemes">
         <label htmlFor="scheme-jump">
-          Jump to scheme
+          <span className="scheme-jump-label">Jump to scheme</span>
           <select
             id="scheme-jump"
             aria-label="Jump to scheme"
@@ -64,7 +66,7 @@ export function ScoreToolbar({
           </select>
         </label>
         <button
-          className="nav-arrow"
+          className="nav-arrow scheme-previous"
           aria-label="Previous scheme"
           title="Previous scheme"
           disabled={index === 0}
@@ -73,7 +75,7 @@ export function ScoreToolbar({
           ↑
         </button>
         <button
-          className="nav-arrow"
+          className="nav-arrow scheme-next"
           aria-label="Next scheme"
           title="Next scheme"
           disabled={index === SCHEMES.length - 1}
@@ -81,12 +83,14 @@ export function ScoreToolbar({
         >
           ↓
         </button>
-        <button className="button light toolbar-edit" onClick={onEdit}>
-          Edit input <span aria-hidden="true">↑</span>
-        </button>
-        <button className="button accent toolbar-export" onClick={onExport}>
-          Export Report <span aria-hidden="true">↗</span>
-        </button>
+        <div className="toolbar-actions">
+          <button className="button light toolbar-edit" onClick={onEdit}>
+            Edit input <span aria-hidden="true">↑</span>
+          </button>
+          <button className="button accent toolbar-export" onClick={onExport}>
+            Export Report <span aria-hidden="true">↗</span>
+          </button>
+        </div>
       </nav>
       <div className="transport">
         <div className="playback-controls" aria-label="Timeline controls">
@@ -95,21 +99,46 @@ export function ScoreToolbar({
             onClick={playback.playing ? playback.pause : playback.play}
             aria-label={playback.playing ? "Pause playback" : "Play playback"}
           >
-            {playback.playing
-              ? "Ⅱ Pause"
-              : playback.completed === count
-                ? "↻ Replay"
-                : "▶ Play"}
+            {playback.playing ? (
+              <>
+                <span className="transport-icon" aria-hidden="true">
+                  Ⅱ{" "}
+                </span>
+                Pause
+              </>
+            ) : playback.completed === count ? (
+              <>
+                <span className="transport-icon" aria-hidden="true">
+                  ↻{" "}
+                </span>
+                Replay
+              </>
+            ) : (
+              <>
+                <span className="transport-icon" aria-hidden="true">
+                  ▶{" "}
+                </span>
+                Play
+              </>
+            )}
           </button>
           <button onClick={playback.reset} aria-label="Reset playback">
-            Reset ↶
+            Reset
+            <span className="transport-icon" aria-hidden="true">
+              {" "}
+              ↶
+            </span>
           </button>
           <button
             onClick={playback.step}
             aria-label="Step one bit"
             disabled={playback.completed === count}
           >
-            Step →
+            Step
+            <span className="transport-icon" aria-hidden="true">
+              {" "}
+              →
+            </span>
           </button>
           <button onClick={playback.finish} aria-label="Show all bits">
             Show all
@@ -135,7 +164,15 @@ export function ScoreToolbar({
           </span>
         </div>
       </div>
-      <div className="score-guide">
+      <div className="score-guide" data-inspecting={selected !== null}>
+        <button
+          className="inspection-entry"
+          onClick={() => onSelect(0)}
+          aria-label="Inspect a bit"
+        >
+          Inspect bit
+        </button>
+        <span className="inspection-hint">Or tap a bit in any waveform.</span>
         <span className="mono">
           {selected === null
             ? "SELECT A BIT TO COMPARE ALL EIGHT"
@@ -176,6 +213,7 @@ export function ScoreToolbar({
           </button>
         </div>
         <button
+          className="inspection-clear"
           onClick={onClear}
           aria-label="Clear selection"
           title="Clear selection (Escape)"

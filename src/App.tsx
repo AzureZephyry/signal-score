@@ -98,10 +98,19 @@ export default function App() {
   useLayoutEffect(() => {
     if (!generation) return;
     score.current?.scrollTo({ left: 0, behavior: "instant" });
-    document
-      .querySelector<HTMLElement>("#comparison-title")
-      ?.focus({ preventScroll: true });
-    comparison.current?.scrollIntoView({ block: "start", behavior: "instant" });
+    const compact =
+      toolbar.current &&
+      getComputedStyle(toolbar.current)
+        .getPropertyValue("--compact-controls")
+        .trim() === "1";
+    const target = compact
+      ? toolbar.current
+      : document.querySelector<HTMLElement>("#comparison-title");
+    target?.focus({ preventScroll: true });
+    (compact ? toolbar.current : comparison.current)?.scrollIntoView({
+      block: "start",
+      behavior: "instant",
+    });
   }, [generation]);
   useEffect(() => {
     if (!sequence) return;
@@ -114,13 +123,18 @@ export default function App() {
           getComputedStyle(toolbar.current).position === "sticky"
             ? toolbar.current.getBoundingClientRect().bottom
             : 0) + 60;
-        let current: SchemeId = "unipolar";
+        const compact =
+          toolbar.current &&
+          getComputedStyle(toolbar.current)
+            .getPropertyValue("--compact-controls")
+            .trim() === "1";
+        let current: SchemeId | null = compact ? null : "unipolar";
         for (const scheme of SCHEMES) {
           const row = document.getElementById(`row-${scheme.id}`);
           if (row && row.getBoundingClientRect().top <= threshold)
             current = scheme.id;
         }
-        setActiveScheme(current);
+        if (current !== null) setActiveScheme(current);
       });
     };
     window.addEventListener("scroll", update, { passive: true });
@@ -222,6 +236,13 @@ export default function App() {
         16,
       behavior: "instant",
     });
+    if (
+      toolbar.current &&
+      getComputedStyle(toolbar.current)
+        .getPropertyValue("--compact-controls")
+        .trim() === "1"
+    )
+      row.querySelector<HTMLElement>("h3")?.focus({ preventScroll: true });
     motion.revealScheme(id);
   };
   const sourceKey = (event: React.KeyboardEvent, bit: number) => {

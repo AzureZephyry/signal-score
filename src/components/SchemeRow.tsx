@@ -129,6 +129,18 @@ export function SchemeRow({
         onSelect={onSelect}
         name={scheme.name}
       />
+      <a
+        className="score-controls-link"
+        href="#score-controls"
+        onClick={(event) => {
+          event.preventDefault();
+          const controls = document.getElementById("score-controls");
+          controls?.focus({ preventScroll: true });
+          controls?.scrollIntoView({ block: "start", behavior: "instant" });
+        }}
+      >
+        Score controls ↑
+      </a>
     </article>
   );
 }
