@@ -1,3 +1,4 @@
+import { inversionDecisions } from "../lib/inversion";
 import { useId } from "react";
 import type { EncodedSignal } from "../lib/types";
 import {
@@ -111,6 +112,18 @@ export function Waveform({
           d={stepPath(signal, bitWidth)}
           clipPath={`url(#${clipId})`}
         />
+        {inversionDecisions(signal).map((decision) => (
+          <circle
+            key={decision.index}
+            className={`inversion-marker ${decision.invert ? "is-invert" : "is-hold"}`}
+            data-marker-bit={decision.index}
+            data-decision={decision.invert ? "invert" : "hold"}
+            cx={bitX(decision.index, bitWidth)}
+            cy={voltageY(decision.level)}
+            r="4.5"
+            aria-hidden="true"
+          />
+        ))}
         <line
           className="playback-cursor"
           x1={width - RIGHT_PAD}
@@ -125,7 +138,7 @@ export function Waveform({
             className="bit-hit"
             role="button"
             tabIndex={bit.index === (selected ?? 0) ? 0 : -1}
-            aria-label={`Inspect bit ${bit.index + 1}, input ${bit.input}, output ${bit.output}${bit.action ? `, ${bit.action}` : ""}`}
+            aria-label={`Inspect bit ${bit.index + 1}, input ${bit.input}, output ${bit.output}${bit.action ? `, ${bit.action}${bit.action === "inv" ? ", solid circle: invert" : bit.action === "no inv" ? ", hollow circle: no invert" : ""}` : ""}`}
             aria-pressed={pinned && selected === bit.index}
             onClick={() => onSelect(bit.index)}
             onMouseEnter={() => onPreview(bit.index)}
@@ -174,9 +187,9 @@ export function Waveform({
       </svg>
       <svg
         className="voltage-axis"
-        width={AXIS_WIDTH}
+        width={42}
         height={GRAPH_HEIGHT}
-        viewBox={`0 0 ${AXIS_WIDTH} ${GRAPH_HEIGHT}`}
+        viewBox={`0 0 42 ${GRAPH_HEIGHT}`}
         aria-hidden="true"
       >
         {([1, 0, -1] as const).map((level) => (
@@ -191,13 +204,8 @@ export function Waveform({
           </text>
         ))}
         {signal.initial !== undefined && (
-          <text
-            x={AXIS_WIDTH - 4}
-            y="151"
-            textAnchor="end"
-            className="time-label"
-          >
-            init {signal.initial === 1 ? "+" : "−"}
+          <text x={38} y="151" textAnchor="end" className="time-label">
+            pre {signal.initial === 1 ? "+" : "−"}
           </text>
         )}
       </svg>

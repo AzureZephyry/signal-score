@@ -1,14 +1,14 @@
 import { useLayoutEffect, type RefObject } from "react";
-import { SCHEMES } from "../lib/schemes";
-import type { SchemeId } from "../lib/types";
+import { GRAPHS } from "../lib/graphs";
+import type { GraphId } from "../lib/types";
 import type { usePlayback } from "../hooks/usePlayback";
 interface Props {
   toolbarRef: RefObject<HTMLDivElement | null>;
   playback: ReturnType<typeof usePlayback>;
   count: number;
   selected: number | null;
-  activeScheme: SchemeId;
-  onScheme: (id: SchemeId) => void;
+  activeScheme: GraphId;
+  onScheme: (id: GraphId) => void;
   onEdit: () => void;
   onExport: () => void;
   onSelect: (index: number) => void;
@@ -39,7 +39,7 @@ export function ScoreToolbar({
     observer.observe(toolbarRef.current);
     return () => observer.disconnect();
   }, [toolbarRef]);
-  const index = SCHEMES.findIndex((scheme) => scheme.id === activeScheme);
+  const index = GRAPHS.findIndex((scheme) => scheme.id === activeScheme);
   return (
     <div
       className="score-toolbar"
@@ -56,9 +56,9 @@ export function ScoreToolbar({
             id="scheme-jump"
             aria-label="Jump to scheme"
             value={activeScheme}
-            onChange={(event) => onScheme(event.target.value as SchemeId)}
+            onChange={(event) => onScheme(event.target.value as GraphId)}
           >
-            {SCHEMES.map((scheme, i) => (
+            {GRAPHS.map((scheme, i) => (
               <option key={scheme.id} value={scheme.id}>
                 {String(i + 1).padStart(2, "0")} · {scheme.name}
               </option>
@@ -70,7 +70,7 @@ export function ScoreToolbar({
           aria-label="Previous scheme"
           title="Previous scheme"
           disabled={index === 0}
-          onClick={() => onScheme(SCHEMES[index - 1].id)}
+          onClick={() => onScheme(GRAPHS[index - 1].id)}
         >
           ↑
         </button>
@@ -78,8 +78,8 @@ export function ScoreToolbar({
           className="nav-arrow scheme-next"
           aria-label="Next scheme"
           title="Next scheme"
-          disabled={index === SCHEMES.length - 1}
-          onClick={() => onScheme(SCHEMES[index + 1].id)}
+          disabled={index === GRAPHS.length - 1}
+          onClick={() => onScheme(GRAPHS[index + 1].id)}
         >
           ↓
         </button>
@@ -175,7 +175,7 @@ export function ScoreToolbar({
         <span className="inspection-hint">Or tap a bit in any waveform.</span>
         <span className="mono">
           {selected === null
-            ? "SELECT A BIT TO COMPARE ALL EIGHT"
+            ? "SELECT A BIT TO COMPARE ALL TEN"
             : `INSPECTING BIT ${String(selected + 1).padStart(2, "0")}`}
         </span>
         <div className="bit-navigation">

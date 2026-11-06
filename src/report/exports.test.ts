@@ -4,8 +4,7 @@ import { PDFDocument } from "pdf-lib";
 import { generateDocx } from "./docx";
 import { generatePdf } from "./pdf";
 import { buildReport, DEFAULT_SETTINGS, type ReportLayout } from "./model";
-import { encode } from "../lib/encoding";
-import { SCHEMES } from "../lib/schemes";
+import { encodeGraphs } from "../lib/graphs";
 const png = Uint8Array.from(
   Buffer.from(
     "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScLbtAAAAABJRU5ErkJggg==",
@@ -19,15 +18,11 @@ it.each([
 ] as const)(
   "generates inspectable PDF and editable Word containers for %s / %s",
   async (sequence, layout) => {
-    const model = buildReport(
-      sequence,
-      SCHEMES.map((s) => encode(s.id, sequence, -1)),
-      {
-        ...DEFAULT_SETTINGS,
-        layout: layout as ReportLayout,
-        schemes: ["nrz-i", "ami"],
-      },
-    );
+    const model = buildReport(sequence, encodeGraphs(sequence), {
+      ...DEFAULT_SETTINGS,
+      layout: layout as ReportLayout,
+      schemes: ["nrz-i", "ami"],
+    });
     const pdf = await PDFDocument.load(await generatePdf(model));
     expect(pdf.getPageCount()).toBe(model.pages.length);
     const files = unzipSync(await generateDocx(model, async () => png));
@@ -58,16 +53,12 @@ import { tableRows, graphHeight } from "./model";
 import { waveformSvg } from "./graphics";
 it("worksheets expose empty grids and answer cells without leaking continuation answers", async () => {
   const sequence = "1" + "0".repeat(30) + "1";
-  const model = buildReport(
-    sequence,
-    SCHEMES.map((s) => encode(s.id, sequence, -1)),
-    {
-      ...DEFAULT_SETTINGS,
-      content: "worksheet",
-      layout: "study",
-      schemes: ["ami", "nrz-i"],
-    },
-  );
+  const model = buildReport(sequence, encodeGraphs(sequence), {
+    ...DEFAULT_SETTINGS,
+    content: "worksheet",
+    layout: "study",
+    schemes: ["ami", "nrz-i"],
+  });
   expect(model.title).toBe("Line coding practice worksheet");
   expect(
     model.pages.flatMap((p) => p.blocks).every((b) => b.kind === "signal"),
@@ -98,11 +89,10 @@ it("worksheets expose empty grids and answer cells without leaking continuation 
       .every(([, data]) => !strFromU8(data).includes("polyline")),
   ).toBe(true);
   expect(strFromU8(files["word/document.xml"])).toContain("Empty voltage grid");
-  const key = buildReport(
-    sequence,
-    SCHEMES.map((s) => encode(s.id, sequence, -1)),
-    { ...model.settings, content: "answer-key" },
-  );
+  const key = buildReport(sequence, encodeGraphs(sequence), {
+    ...model.settings,
+    content: "answer-key",
+  });
   expect(key.ranges).toEqual(model.ranges);
   expect(key.title).toBe("Line coding answer key");
   const card = key.pages
@@ -111,17 +101,13 @@ it("worksheets expose empty grids and answer cells without leaking continuation 
   if (card.kind === "signal") expect(waveformSvg(card)).toContain("polyline");
 });
 it("honors optional tables, positions and explanations in editable exports", async () => {
-  const model = buildReport(
-    "101",
-    SCHEMES.map((s) => encode(s.id, "101")),
-    {
-      ...DEFAULT_SETTINGS,
-      schemes: ["ami"],
-      tables: false,
-      positions: false,
-      explanations: false,
-    },
-  );
+  const model = buildReport("101", encodeGraphs("101"), {
+    ...DEFAULT_SETTINGS,
+    schemes: ["ami"],
+    tables: false,
+    positions: false,
+    explanations: false,
+  });
   const files = unzipSync(await generateDocx(model, async () => png));
   const xml = strFromU8(files["word/document.xml"]);
   expect(xml).not.toContain("<w:tbl>");

@@ -9,6 +9,12 @@ export type SchemeId =
   | "differential"
   | "ami"
   | "pseudoternary";
+export type GraphId = SchemeId | "nrz-i-low" | "differential-low";
+export interface Graph extends Omit<Scheme, "id"> {
+  id: GraphId;
+  algorithm: SchemeId;
+  initial?: InitialLevel;
+}
 export interface Segment {
   start: number;
   end: number;
@@ -23,6 +29,7 @@ export interface EncodedBit {
 }
 export interface EncodedSignal {
   id: SchemeId;
+  graphId?: GraphId;
   bits: EncodedBit[];
   segments: Segment[];
   initial?: InitialLevel;

@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
-import type { EncodedSignal, SchemeId } from "../lib/types";
-import { SCHEMES } from "../lib/schemes";
+import type { EncodedSignal, GraphId } from "../lib/types";
+import { GRAPHS, signalGraphId } from "../lib/graphs";
 import {
   graphHeight,
   buildReport,
@@ -64,7 +64,7 @@ function Preview({ model }: { model: ReportModel }) {
           </div>
           <h4>{model.title}</h4>
           <p>
-            {model.sequence.length} bits · {model.schemes.length} schemes ·{" "}
+            {model.sequence.length} bits · {model.schemes.length} graphs ·{" "}
             {model.settings.layout} ·{" "}
             {model.settings.organization === "range"
               ? "Compare by bit range"
@@ -229,7 +229,7 @@ export function ReportStudio({
     setError("");
     setStatus("");
   };
-  const selectScheme = (id: SchemeId) =>
+  const selectScheme = (id: GraphId) =>
     update(
       "schemes",
       settings.schemes.includes(id)
@@ -389,18 +389,18 @@ export function ReportStudio({
                   if (mode === "all")
                     update(
                       "schemes",
-                      SCHEMES.map((s) => s.id),
+                      GRAPHS.map((s) => s.id),
                     );
                 }}
               >
-                <option value="all">All eight</option>
+                <option value="all">All ten graphs</option>
                 <option value="custom">Custom selection</option>
               </select>
             </label>
             {selection === "custom" && (
               <fieldset className="report-scheme-list">
                 <legend>Include schemes</legend>
-                {SCHEMES.map((s) => (
+                {GRAPHS.map((s) => (
                   <label className="report-check" key={s.id}>
                     <input
                       type="checkbox"
@@ -448,14 +448,14 @@ export function ReportStudio({
             <strong>Generated score</strong>
             <span>
               {sequence.length} bits · {result.model?.schemes.length ?? 0}{" "}
-              selected schemes
+              selected graphs
             </span>
             {signals
               .filter((s) => s.initial !== undefined)
               .map((s) => (
-                <span key={s.id}>
-                  {SCHEMES.find((meta) => meta.id === s.id)!.name}: initially{" "}
-                  {s.initial === 1 ? "high (+V)" : "low (−V)"}
+                <span key={signalGraphId(s)}>
+                  {GRAPHS.find((meta) => meta.id === signalGraphId(s))!.name}:{" "}
+                  {s.initial === 1 ? "+V" : "−V"} before bit 1
                 </span>
               ))}
           </div>

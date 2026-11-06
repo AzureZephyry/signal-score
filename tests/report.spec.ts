@@ -18,9 +18,7 @@ async function openStudio(page: Page, value = "111001011000") {
   await page
     .getByRole("button", { name: "Source bit 4: 0", exact: true })
     .click();
-  await page
-    .getByLabel("Polar NRZ-I initial voltage", { exact: true })
-    .selectOption("-1");
+
   await page
     .getByRole("button", { name: "Reset playback", exact: true })
     .click();
@@ -43,9 +41,9 @@ test("Report Studio previews and exports actual PDF and editable Word data, inde
     dialog.getByText(/Representative preview with calculated page boundaries/),
   ).toBeVisible();
   await expect(dialog.locator(".report-initials")).toContainText(
-    "initially low",
+    "Initially Low",
   );
-  await expect(dialog.locator(".report-page-nav")).toContainText("Page 1 of 4");
+  await expect(dialog.locator(".report-page-nav")).toContainText("Page 1 of 5");
   const [pdfDownload] = await Promise.all([
     page.waitForEvent("download"),
     dialog.getByRole("button", { name: "Download PDF", exact: true }).click(),
@@ -53,7 +51,7 @@ test("Report Studio previews and exports actual PDF and editable Word data, inde
   const pdf = await PDFDocument.load(
     await readFile((await pdfDownload.path())!),
   );
-  expect(pdf.getPageCount()).toBe(4);
+  expect(pdf.getPageCount()).toBe(5);
   expect(pdf.getTitle()).toBe("Digital line coding report");
   await dialog
     .getByLabel("Output format", { exact: true })
@@ -66,7 +64,7 @@ test("Report Studio previews and exports actual PDF and editable Word data, inde
   ]);
   const files = unzipSync(await readFile((await wordDownload.path())!));
   const xml = strFromU8(files["word/document.xml"]);
-  expect((xml.match(/<w:tbl>/g) || []).length).toBe(8);
+  expect((xml.match(/<w:tbl>/g) || []).length).toBe(10);
   expect(xml).toContain("Initial level -V");
   expect(xml).toContain("nTp");
   expect(xml).toContain('w:orient="landscape"');
@@ -81,12 +79,13 @@ test("Report Studio previews and exports actual PDF and editable Word data, inde
   await expect(
     page.getByRole("button", { name: "Export Report", exact: true }),
   ).toBeFocused();
-  await expect(page.locator(".output-row .is-selected")).toHaveCount(8);
+  await expect(page.locator(".output-row .is-selected")).toHaveCount(10);
   expect(errors).toEqual([]);
 });
 test("custom schemes, Study reasoning, grayscale and maximum input paginate without page overflow", async ({
   page,
 }) => {
+  test.setTimeout(60_000);
   await openStudio(page, "1110010110001010".repeat(8));
   const dialog = page.getByRole("dialog");
   await dialog
@@ -95,14 +94,16 @@ test("custom schemes, Study reasoning, grayscale and maximum input paginate with
   for (const name of [
     "Unipolar NRZ",
     "Polar NRZ-L",
+    "Polar NRZ-I — Initially Low",
     "Polar RZ",
     "Manchester",
-    "Differential Manchester",
-    "Bipolar Pseudoternary",
+    "Differential Manchester — Initially High",
+    "Differential Manchester — Initially Low",
+    "Pseudoternary",
   ])
     await dialog.getByRole("checkbox", { name, exact: true }).uncheck();
   await expect(dialog.locator(".report-initials")).toContainText(
-    "2 selected schemes",
+    "2 selected graphs",
   );
   await dialog
     .getByLabel("Report layout", { exact: true })
@@ -130,14 +131,17 @@ test("custom schemes, Study reasoning, grayscale and maximum input paginate with
     .click();
   await expect(dialog.locator(".print-reason")).not.toHaveCount(0);
   await expect(dialog.locator(".report-paper")).toContainText("initial level");
-  for (const name of ["Polar NRZ-I", "Bipolar AMI"])
+  for (const name of ["Polar NRZ-I — Initially High", "Bipolar AMI"])
     await dialog.getByRole("checkbox", { name, exact: true }).uncheck();
   await expect(
     dialog.getByRole("button", { name: "Download PDF", exact: true }),
   ).toBeDisabled();
   await expect(dialog.getByRole("alert")).toContainText("Select at least one");
   await dialog
-    .getByRole("checkbox", { name: "Polar NRZ-I", exact: true })
+    .getByRole("checkbox", {
+      name: "Polar NRZ-I — Initially High",
+      exact: true,
+    })
     .check();
   await expect(
     dialog.getByRole("button", { name: "Download PDF", exact: true }),
@@ -202,11 +206,13 @@ test("practice grids and separate answer keys use the same generated score witho
   for (const name of [
     "Unipolar NRZ",
     "Polar NRZ-L",
-    "Polar NRZ-I",
+    "Polar NRZ-I — Initially High",
+    "Polar NRZ-I — Initially Low",
     "Polar RZ",
     "Manchester",
-    "Differential Manchester",
-    "Bipolar Pseudoternary",
+    "Differential Manchester — Initially High",
+    "Differential Manchester — Initially Low",
+    "Pseudoternary",
   ])
     await dialog.getByRole("checkbox", { name, exact: true }).uncheck();
   await dialog

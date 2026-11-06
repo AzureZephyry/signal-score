@@ -9,7 +9,7 @@ export function Legend() {
           of signals.
         </h2>
         <p>
-          Eight ways to carry the same information.
+          Ten waveforms. Eight encoding families.
           <br />
           Read the voltage. Follow the transitions.
         </p>

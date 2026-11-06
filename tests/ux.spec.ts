@@ -172,7 +172,7 @@ test("keyboard workflow, useful validation, immediate results, and non-destructi
   await expect(
     page.getByLabel("Number of bits", { exact: true }),
   ).toBeFocused();
-  await expect(page.locator("[data-scheme]")).toHaveCount(8);
+  await expect(page.locator("[data-scheme]")).toHaveCount(10);
   await page.getByRole("button", { name: "Cancel length change" }).click();
   await expect(bits).toHaveValue(sample);
   await expect(bits).toBeFocused();
@@ -253,7 +253,7 @@ test("pinned inspection remains visible, does not change on hover, and has bound
     return selected.left >= box.left + 55 && selected.right <= box.right + 1;
   });
   expect(visible).toBe(true);
-  await expect(page.locator(".selected-interval")).toHaveCount(8);
+  await expect(page.locator(".selected-interval")).toHaveCount(10);
   await page.locator('[data-scheme="unipolar"] .bit-hit').nth(126).hover();
   await expect(page.locator("#inspect-bit")).toHaveValue("128");
   const control = page
@@ -262,7 +262,7 @@ test("pinned inspection remains visible, does not change on hover, and has bound
   await control.focus();
   await control.press("ArrowLeft");
   await expect(page.locator("#inspect-bit")).toHaveValue("127");
-  await expect(page.locator(".output-row .is-selected")).toHaveCount(8);
+  await expect(page.locator(".output-row .is-selected")).toHaveCount(10);
   const stops = await page
     .locator(
       'button:not(:disabled):not([tabindex="-1"]),select,a,[tabindex="0"]',
@@ -295,9 +295,7 @@ test("initial changes keep results complete and timeline scrubbing is predictabl
   await page
     .getByRole("button", { name: "Source bit 6: 1", exact: true })
     .click();
-  await page
-    .getByLabel("Polar NRZ-I initial voltage", { exact: true })
-    .selectOption("-1");
+
   await expect(page.locator(".playback-status")).toContainText("12 / 12");
   await expect(
     page.getByRole("button", { name: "Pause playback", exact: true }),

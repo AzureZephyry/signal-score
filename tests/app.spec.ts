@@ -8,7 +8,7 @@ async function generate(page: Page, bits = sample) {
   await page.getByRole("button", { name: "Set length" }).click();
   await page.getByLabel("Binary sequence", { exact: true }).fill(bits);
   await page.getByRole("button", { name: "Generate waveforms" }).click();
-  await expect(page.locator("[data-scheme]")).toHaveCount(8);
+  await expect(page.locator("[data-scheme]")).toHaveCount(10);
   await page
     .getByRole("button", { name: "Show all bits", exact: true })
     .click();
@@ -21,7 +21,7 @@ async function noOverflow(page: Page) {
   ).toBe(true);
 }
 
-test("length first, strict validation, sample, and eight complete tables", async ({
+test("length first, strict validation, sample, and ten complete tables", async ({
   page,
 }) => {
   const errors: string[] = [];
@@ -58,8 +58,8 @@ test("length first, strict validation, sample, and eight complete tables", async
   await page.getByRole("button", { name: "Load example" }).click();
   await expect(input).toHaveValue(sample);
   await page.getByRole("button", { name: "Generate waveforms" }).click();
-  await expect(page.locator(".signal-path")).toHaveCount(8);
-  await expect(page.locator(".output-table")).toHaveCount(8);
+  await expect(page.locator(".signal-path")).toHaveCount(10);
+  await expect(page.locator(".output-table")).toHaveCount(10);
   const expected: Record<string, string> = {
     unipolar: "hi hi hi lo lo hi lo hi hi lo lo lo",
     "nrz-l": "neg neg neg pos pos neg pos neg neg pos pos pos",
@@ -88,16 +88,17 @@ test("length first, strict validation, sample, and eight complete tables", async
   expect(errors).toEqual([]);
 });
 
-test("initial states update both labels and graphical voltage paths", async ({
+test("independent initial variants retain their labels and graphical voltage paths", async ({
   page,
 }) => {
   await generate(page);
-  const nrzi = page.locator('[data-scheme="nrz-i"]');
-  const differential = page.locator('[data-scheme="differential"]');
-  const highPath = await nrzi.locator(".signal-path").getAttribute("d");
-  await page
-    .getByLabel("Polar NRZ-I initial voltage", { exact: true })
-    .selectOption("-1");
+  const nrzi = page.locator('[data-scheme="nrz-i-low"]');
+  const differential = page.locator('[data-scheme="differential-low"]');
+  const highPath = await page
+    .locator('[data-scheme="nrz-i"]')
+    .locator(".signal-path")
+    .getAttribute("d");
+
   await expect(nrzi.locator("[data-output]")).toHaveText(
     "pos neg pos pos pos neg neg pos neg neg neg neg".split(" "),
   );
@@ -108,9 +109,7 @@ test("initial states update both labels and graphical voltage paths", async ({
     "d",
     /^M44,120H56V48/,
   );
-  await page
-    .getByLabel("Differential Manchester initial voltage", { exact: true })
-    .selectOption("-1");
+
   await expect(differential.locator("[data-output]")).toHaveText(
     "nTp pTn nTp nTp nTp pTn pTn nTp pTn pTn pTn pTn".split(" "),
   );
@@ -140,14 +139,16 @@ test("bit inspection synchronizes all rows, source, and explanations", async ({
   await page
     .getByRole("button", { name: "Source bit 6: 1", exact: true })
     .click();
-  await expect(page.locator(".selected-interval")).toHaveCount(8);
+  await expect(page.locator(".selected-interval")).toHaveCount(10);
   await expect(page.locator(".output-row .is-selected")).toHaveText([
     "hi",
     "neg",
     "pos",
+    "neg",
     "pos",
     "nTp",
     "nTp",
+    "pTn",
     "neg",
     "zero",
   ]);
@@ -215,7 +216,7 @@ test("reduced motion reveals immediately and remains inspectable", async ({
   await page
     .getByRole("button", { name: "Source bit 1: 1", exact: true })
     .click();
-  await expect(page.locator(".selected-interval")).toHaveCount(8);
+  await expect(page.locator(".selected-interval")).toHaveCount(10);
 });
 
 test("long inputs stay aligned inside a shared scroll area without page overflow", async ({
@@ -225,7 +226,7 @@ test("long inputs stay aligned inside a shared scroll area without page overflow
   await page
     .getByRole("button", { name: "Show all bits", exact: true })
     .click();
-  await expect(page.locator(".output-row [data-output]")).toHaveCount(1024);
+  await expect(page.locator(".output-row [data-output]")).toHaveCount(1280);
   const scroller = page.locator(".score-scroll");
   expect(await scroller.evaluate((el) => el.scrollWidth > el.clientWidth)).toBe(
     true,
@@ -286,7 +287,7 @@ test("editing, randomizing and changing length preserve the required workflow", 
   await expect(page.getByLabel("Binary sequence", { exact: true })).toHaveCount(
     0,
   );
-  await expect(page.locator("[data-scheme]")).toHaveCount(8);
+  await expect(page.locator("[data-scheme]")).toHaveCount(10);
   await page.getByLabel("Number of bits", { exact: true }).fill("1");
   await page.getByRole("button", { name: "Set length" }).click();
   await expect(
@@ -297,7 +298,7 @@ test("editing, randomizing and changing length preserve the required workflow", 
     /^[01]$/,
   );
   await page.getByRole("button", { name: "Update waveforms" }).click();
-  await expect(page.locator(".signal-path")).toHaveCount(8);
+  await expect(page.locator(".signal-path")).toHaveCount(10);
 });
 
 test("capture the completed application with no blocking script errors", async ({
@@ -365,7 +366,7 @@ test("resizing preserves paused timeline position and selected interval", async 
   await expect(
     page.getByRole("button", { name: "Play playback", exact: true }),
   ).toBeVisible();
-  await expect(page.locator(".selected-interval")).toHaveCount(8);
+  await expect(page.locator(".selected-interval")).toHaveCount(10);
   await page
     .getByRole("button", { name: "Reset playback", exact: true })
     .click();

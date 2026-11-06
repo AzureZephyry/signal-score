@@ -121,6 +121,27 @@ export async function generatePdf(model: ReportModel): Promise<Uint8Array> {
           p.accent,
           1.8,
         );
+    if (model.settings.content !== "worksheet") {
+      pdf.setDrawColor(p.ink);
+      pdf.setLineWidth(1.3);
+      if (d.markers.length) {
+        pdf.setFillColor(p.ink);
+        pdf.circle(PAPER.margin + PAPER.axis + 3, y + height - 5, 2.7, "FD");
+        pdf.setFillColor(p.paper);
+        pdf.circle(PAPER.margin + PAPER.axis + 66, y + height - 5, 2.7, "FD");
+        text("Invert", PAPER.margin + PAPER.axis + 11, y + height - 2, 8);
+        text(
+          "No invert / bit start",
+          PAPER.margin + PAPER.axis + 74,
+          y + height - 2,
+          8,
+        );
+      }
+      for (const marker of d.markers) {
+        pdf.setFillColor(marker.invert ? p.ink : p.paper);
+        pdf.circle(PAPER.margin + marker.x, y + marker.y, 3.2, "FD");
+      }
+    }
     y += height;
     if (model.settings.tables)
       for (const row of tableRows(block, model.settings)) {
@@ -153,7 +174,7 @@ export async function generatePdf(model: ReportModel): Promise<Uint8Array> {
     );
     text(model.title, PAPER.margin, 52, 22, p.ink, "helvetica", true);
     text(
-      `${model.sequence.length} bits / ${model.schemes.length} schemes / ${model.settings.layout} / ${model.settings.organization === "range" ? "compare by bit range" : "study by encoding scheme"}`,
+      `${model.sequence.length} bits / ${model.schemes.length} graphs / ${model.settings.layout} / ${model.settings.organization === "range" ? "compare by bit range" : "study by encoding scheme"}`,
       PAPER.margin,
       70,
       9,

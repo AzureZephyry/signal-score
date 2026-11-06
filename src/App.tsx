@@ -14,11 +14,10 @@ import { SchemeRow } from "./components/SchemeRow";
 import { Legend } from "./components/Legend";
 import { ThemeToggle } from "./components/ThemeToggle";
 import { ScoreToolbar } from "./components/ScoreToolbar";
-import { SCHEMES } from "./lib/schemes";
-import { encode } from "./lib/encoding";
+import { GRAPHS, encodeGraphs } from "./lib/graphs";
 import { validateBits, validateLength } from "./lib/validation";
 import { AXIS_WIDTH, RIGHT_PAD } from "./lib/geometry";
-import type { InitialLevel, SchemeId } from "./lib/types";
+import type { GraphId } from "./lib/types";
 import { usePlayback } from "./hooks/usePlayback";
 import { useReducedMotion } from "./hooks/useReducedMotion";
 
@@ -34,15 +33,11 @@ export default function App() {
   );
   const [generation, setGeneration] = useState(0);
   const [studioOpen, setStudioOpen] = useState(false);
-  const [initials, setInitials] = useState({
-    "nrz-i": 1 as InitialLevel,
-    differential: 1 as InitialLevel,
-  });
   const [selected, setSelected] = useState<number | null>(null);
   const [hovered, setHovered] = useState<number | null>(null);
   const inspected = selected ?? hovered;
-  const [focused, setFocused] = useState<SchemeId | null>(null);
-  const [activeScheme, setActiveScheme] = useState<SchemeId>("unipolar");
+  const [focused, setFocused] = useState<GraphId | null>(null);
+  const [activeScheme, setActiveScheme] = useState<GraphId>("unipolar");
   const [viewportWidth, setViewportWidth] = useState(1000);
   const score = useRef<HTMLDivElement>(null);
   const comparison = useRef<HTMLElement>(null);
@@ -53,20 +48,8 @@ export default function App() {
     64,
     (viewportWidth - AXIS_WIDTH - RIGHT_PAD) / Math.max(1, sequence.length),
   );
-  const signals = useMemo(
-    () =>
-      SCHEMES.map((scheme) =>
-        encode(
-          scheme.id,
-          sequence || "0",
-          scheme.id === "nrz-i" || scheme.id === "differential"
-            ? initials[scheme.id]
-            : 1,
-        ),
-      ),
-    [sequence, initials],
-  );
-  const revision = `${generation}-${initials["nrz-i"]}-${initials.differential}`;
+  const signals = useMemo(() => encodeGraphs(sequence || "0"), [sequence]);
+  const revision = String(generation);
   const playback = usePlayback(
     score,
     sequence.length,
@@ -128,8 +111,8 @@ export default function App() {
           getComputedStyle(toolbar.current)
             .getPropertyValue("--compact-controls")
             .trim() === "1";
-        let current: SchemeId | null = compact ? null : "unipolar";
-        for (const scheme of SCHEMES) {
+        let current: GraphId | null = compact ? null : "unipolar";
+        for (const scheme of GRAPHS) {
           const row = document.getElementById(`row-${scheme.id}`);
           if (row && row.getBoundingClientRect().top <= threshold)
             current = scheme.id;
@@ -221,7 +204,7 @@ export default function App() {
       "Change the length and confirm it. Your current score and binary draft are kept.",
     );
   };
-  const jumpToScheme = (id: SchemeId) => {
+  const jumpToScheme = (id: GraphId) => {
     setActiveScheme(id);
     const row = document.getElementById(`row-${id}`);
     if (!row) return;
@@ -290,7 +273,7 @@ export default function App() {
           <span className="brand-mark" aria-hidden="true">
             ▰
           </span>{" "}
-          SIGNAL / SCORE<span className="brand-edition">Nº 08</span>
+          SIGNAL / SCORE<span className="brand-edition">Nº 10</span>
         </a>
         <div className="header-actions">
           <a className="masthead-link" href="#compose">
@@ -428,7 +411,7 @@ export default function App() {
               <h2 id="comparison-title" tabIndex={-1}>
                 One sequence.
                 <br />
-                <span>Eight expressions.</span>
+                <span>Ten expressions.</span>
               </h2>
             </div>
             <div className="score-intro">
@@ -438,7 +421,7 @@ export default function App() {
               <p>
                 {sequence
                   ? "Time runs left to right; height shows voltage. Each column connects one input bit to its waveform and output labels."
-                  : "First confirm a length, then enter your bits. Your eight synchronized encodings will appear here."}
+                  : "First confirm a length, then enter your bits. Your ten waveform graphs across eight encoding families will appear here."}
               </p>
             </div>
           </div>
@@ -521,7 +504,7 @@ export default function App() {
                 ref={score}
                 tabIndex={0}
                 role="region"
-                aria-label="Eight line coding waveforms and output tables. Scroll horizontally for long sequences."
+                aria-label="Ten line coding waveforms and output tables. Scroll horizontally for long sequences."
                 style={
                   { "--score-viewport": `${viewportWidth}px` } as CSSProperties
                 }
@@ -532,7 +515,7 @@ export default function App() {
                     width: AXIS_WIDTH + sequence.length * bitWidth + RIGHT_PAD,
                   }}
                 >
-                  {SCHEMES.map((scheme, index) => (
+                  {GRAPHS.map((scheme, index) => (
                     <SchemeRow
                       key={scheme.id}
                       scheme={scheme}
@@ -544,21 +527,6 @@ export default function App() {
                       focused={focused === scheme.id}
                       onSelect={inspectBit}
                       onPreview={previewBit}
-                      onInitial={(level) => {
-                        if (
-                          scheme.id === "nrz-i" ||
-                          scheme.id === "differential"
-                        ) {
-                          motion.emphasizeInitial(scheme.id);
-                          setInitials((previous) => ({
-                            ...previous,
-                            [scheme.id]: level,
-                          }));
-                          setNotice(
-                            `${scheme.name} updated to initially ${level === 1 ? "high (+V)" : "low (−V)"}. Waveform and output table updated.`,
-                          );
-                        }
-                      }}
                       onFocus={() =>
                         setFocused((previous) =>
                           previous === scheme.id ? null : scheme.id,

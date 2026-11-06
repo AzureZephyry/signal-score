@@ -5,7 +5,9 @@ export function LearningGuide() {
       <ol>
         <li>Choose the bit-stream length and confirm it.</li>
         <li>Enter exactly that many binary digits: only 0 and 1.</li>
-        <li>Generate and compare the eight waveforms.</li>
+        <li>
+          Generate and compare ten waveforms across eight encoding families.
+        </li>
         <li>
           Select a bit, then choose <strong>Explain encoding</strong> to
           understand its voltage pattern. Use the encoding selector to move
@@ -35,6 +37,16 @@ export function GraphGuide() {
             voltage, and <strong>−V</strong> is negative voltage. These are
             relative levels, not a fixed number of volts. Faint dotted guides
             mark bit boundaries and, where needed, half-bits.
+          </p>
+        </div>
+        <div>
+          <h3>Initial polarity and circles</h3>
+          <p>
+            NRZ-I and Differential Manchester each show High and Low variants.
+            This is the level before bit 1, not necessarily its output. A solid
+            circle (●) means invert at the bit start; a hollow circle (○) means
+            hold. Differential Manchester also inverts halfway through every
+            bit.
           </p>
         </div>
         <div>

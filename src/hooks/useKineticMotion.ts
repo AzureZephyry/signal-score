@@ -1,6 +1,6 @@
 import { useLayoutEffect, useRef, type RefObject } from "react";
 import gsap from "gsap";
-import type { SchemeId } from "../lib/types";
+import type { GraphId } from "../lib/types";
 interface Options {
   page: RefObject<HTMLDivElement | null>;
   comparison: RefObject<HTMLElement | null>;
@@ -190,7 +190,7 @@ export function useKineticMotion({
       initial.current?.progress(1).kill();
     }
   }, [reduced]);
-  const revealScheme = (id: SchemeId) => {
+  const revealScheme = (id: GraphId) => {
     navigation.current?.progress(1).kill();
     if (reduced) return;
     const row = document.getElementById(`row-${id}`);
@@ -224,7 +224,7 @@ export function useKineticMotion({
       { y: 0, duration: 0.4, ease: "power3.out" },
     );
   };
-  const emphasizeInitial = (id: SchemeId) => {
+  const emphasizeInitial = (id: GraphId) => {
     initial.current?.progress(1).kill();
     if (reduced) return;
     const row = document.getElementById(`row-${id}`);

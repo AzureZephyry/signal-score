@@ -1,0 +1,38 @@
+.initial-state {
+  font:
+    12px/1.5 "DM Mono",
+    monospace;
+  color: var(--ink);
+}
+.inversion-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 20px;
+  margin: 0 0 12px 56px;
+  font-size: 13px;
+  color: var(--ink);
+}
+.inversion-legend span:last-child {
+  color: var(--muted);
+}
+.inversion-marker {
+  stroke: var(--ink);
+  stroke-width: 2;
+  pointer-events: none;
+}
+.inversion-marker.is-invert {
+  fill: var(--ink);
+}
+.inversion-marker.is-hold {
+  fill: var(--plot-surface);
+}
+@media (max-width: 760px) {
+  .initial-state {
+    display: block;
+  }
+  .inversion-legend {
+    max-width: calc(var(--score-viewport) - 80px);
+    margin-left: 56px;
+    gap: 4px 14px;
+  }
+}
