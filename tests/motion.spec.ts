@@ -4,7 +4,7 @@ async function generate(page: Page, value = "111001011000") {
   await page.getByRole("button", { name: "Set length" }).click();
   await page.getByLabel("Binary sequence", { exact: true }).fill(value);
   await page.getByRole("button", { name: "Generate waveforms" }).click();
-  await expect(page.locator("[data-scheme]")).toHaveCount(8);
+  await expect(page.locator("[data-scheme]")).toHaveCount(10);
 }
 async function samples(
   page: Page,
@@ -124,8 +124,8 @@ test("generation draws actual paths over time, synchronizes labels, and retains 
   page,
 }) => {
   await generate(page);
-  await expect(page.locator(".signal-reference")).toHaveCount(8);
-  await expect(page.locator("[data-output]")).toHaveCount(96);
+  await expect(page.locator(".signal-reference")).toHaveCount(10);
+  await expect(page.locator("[data-output]")).toHaveCount(120);
   const frames = await page.evaluate(
     () =>
       new Promise<
@@ -157,7 +157,7 @@ test("generation draws actual paths over time, synchronizes labels, and retains 
             width: fraction,
             aligned: masks.every((width) => Math.abs(width - masks[0]) < 0.01),
             labels:
-              active.length === 8 &&
+              active.length === 10 &&
               active.every(
                 (el) => Number((el as HTMLElement).dataset.revealBit) === bit,
               ),
@@ -206,9 +206,11 @@ test("inspection, scheme navigation and explanation expansion produce measured m
     "hi",
     "neg",
     "pos",
+    "neg",
     "pos",
     "nTp",
     "nTp",
+    "pTn",
     "neg",
     "zero",
   ]);

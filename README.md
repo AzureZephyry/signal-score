@@ -2,28 +2,32 @@
 
 An interactive digital signal laboratory for exploring how binary information becomes electrical waveforms.
 
-Compose a binary sequence, compare eight line coding schemes, and follow each bit through its voltage states. Signal / Score combines precise scientific diagrams with the **Kinetic Signal Score** identity: expressive typography, warm paper, ink, vermilion and olive, with coordinated motion and an accessible Night Mode.
+Compose a binary sequence, compare ten waveform graphs across eight encoding families, and follow each bit through its voltage states. Signal / Score combines precise scientific diagrams with the **Kinetic Signal Score** identity: expressive typography, warm paper, ink, vermilion and olive, with coordinated motion and an accessible Night Mode.
 
 ## Key features
 
-- **Eight synchronized encodings** with accurate SVG step waveforms, voltage axes, bit boundaries and aligned input/output tables.
+- **Ten synchronized waveform graphs** with accurate SVG step waveforms, voltage axes, bit boundaries and aligned input/output tables.
 - **Length-first input** from 1 to 128 bits, exact binary validation, an example sequence and randomization.
-- **Bit inspection** across every scheme, contextual explanations and independent initial conditions for NRZ-I and Differential Manchester.
+- **Bit inspection** across every scheme, contextual explanations and simultaneous Initially High and Initially Low graphs for NRZ-I and Differential Manchester.
 - **Purposeful motion** with kinetic typography, synchronized waveform reveals, playback, seeking and an immediate reduced-motion alternative.
 - **Day and Night themes** with saved/system preferences, keyboard navigation and responsive layouts.
 - **Report Studio** for vector PDF, editable Word, Study reports, practice worksheets and separate answer keys, all generated locally.
+
+NRZ-I and Differential Manchester each have two independent results. Initially High means +V immediately before bit 1; Initially Low means -V before bit 1. Solid circles mean invert at the bit start; hollow circles mean no invert. Every Differential Manchester bit also changes level at its midpoint.
+
+See [graph definitions and reference verification](docs/TEN_GRAPHS.md) for the ordered results, sample fixtures and compatibility details.
 
 ## Screenshots
 
 ### Compare and inspect signals
 
-![Day Mode waveform comparison with shared bit inspection](docs/screenshots/signal-score-day.png)
+![NRZ-I and Differential Manchester High and Low variants with inversion circles in Day Mode](docs/screenshots/ten-graph-variants-day.png)
 
-![Night Mode waveform comparison](docs/screenshots/signal-score-night.png)
+![The four inversion-marked variants in Night Mode](docs/screenshots/ten-graph-variants-night.png)
 
 ### Report Studio
 
-![Report Studio settings and representative paginated preview](docs/screenshots/report-studio.png)
+![Report Studio settings and representative paginated preview](docs/screenshots/report-studio-ten-graphs.png)
 
 These are actual application captures. Print previews are representative; exported PDF typography and edited Word pagination can differ.
 
@@ -101,7 +105,7 @@ After generating a score, choose **Export Report**. Studio uses the last generat
 - **Formats:** vector PDF and editable Word (.docx).
 - **Layouts:** Compact, Detailed and Study.
 - **Organization:** compare by bit range or study by encoding scheme.
-- **Content:** all eight or custom schemes; optional explanations, output tables, original bit-position rows, contextual reasoning and grayscale printing.
+- **Content:** all ten or custom graphs; optional explanations, output tables, original bit-position rows, contextual reasoning and grayscale printing.
 - **Practice:** empty waveform grids and blank answer cells, plus a separate answer-key export with the same source and initial conditions.
 
 The complete stream is encoded before segmentation. Reports preserve state, pulse polarity and whole-bit boundaries through 128 bits. Printable bit capacity is calculated from page width, layout and label metrics; long inputs are never compressed onto one page. The interface includes a representative preview and calculated page plan.

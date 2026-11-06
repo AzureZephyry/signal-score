@@ -218,7 +218,7 @@ export async function generateDocx(
     );
     children.push(
       paragraph(
-        `${model.sequence.length} bits / ${model.schemes.length} schemes / ${model.settings.layout} / ${model.settings.organization === "range" ? "compare by bit range" : "study by encoding scheme"}`,
+        `${model.sequence.length} bits / ${model.schemes.length} graphs / ${model.settings.layout} / ${model.settings.organization === "range" ? "compare by bit range" : "study by encoding scheme"}`,
         9,
         { color: p.muted, after: 2 },
       ),

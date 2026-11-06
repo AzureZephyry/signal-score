@@ -48,6 +48,9 @@ export function usePlayback(
     const scope = gsap.context(() => {
       const masks = el.querySelectorAll(".signal-reveal");
       const cursors = el.querySelectorAll(".playback-cursor");
+      const markers = [
+        ...el.querySelectorAll<SVGCircleElement>("[data-marker-bit]"),
+      ];
       const proxy = { bit: 0 };
       let last = -1;
       const paint = () => {
@@ -57,6 +60,12 @@ export function usePlayback(
             x1: AXIS_WIDTH + proxy.bit * width.current,
             x2: AXIS_WIDTH + proxy.bit * width.current,
           },
+        });
+        markers.forEach((marker) => {
+          marker.style.visibility =
+            proxy.bit > Number(marker.dataset.markerBit) + 0.00001
+              ? "visible"
+              : "hidden";
         });
         el.dataset.revealBit = String(proxy.bit);
         el.style.setProperty(

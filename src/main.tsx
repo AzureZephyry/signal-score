@@ -6,6 +6,7 @@ import "./ux.css";
 import "./readability.css";
 import "./motion.css";
 import "./mobile-controls.css";
+import "./graph-variants.css";
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <App />

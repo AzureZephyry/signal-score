@@ -34,13 +34,13 @@ export function explainBit(signal: EncodedSignal, index: number): string {
     case "nrz-l":
       return `Input ${bit.input} holds ${voltage(first)} for the entire bit: ${first === -1 ? "negative" : "positive"} voltage (${bit.output}). The level itself represents the input value.`;
     case "nrz-i":
-      return `${prefix} ${voltage(previous!)}. Input ${bit.input} ${bit.action === "inv" ? `inverts that level to ${voltage(first)} at the beginning (inv)` : `keeps that level at ${voltage(first)}, with no beginning transition (no inv)`}. It then holds ${voltage(last)} for the rest of the bit.`;
+      return `${prefix} ${voltage(previous!)}. Input ${bit.input} ${bit.action === "inv" ? `inverts that level to ${voltage(first)} at the beginning (inv)` : `keeps that level at ${voltage(first)}, with no beginning transition (no inv)`}. A ${bit.action === "inv" ? "solid circle (invert)" : "hollow circle (no invert)"} marks this bit-start decision. It then holds ${voltage(last)} for the rest of the bit.`;
     case "rz":
       return `Input ${bit.input} uses ${voltage(first)} during the first half, then returns to ${voltage(last)} halfway through. The table records ${bit.output} for the pulse and RZ for the return to zero.`;
     case "manchester":
       return `Input ${bit.input} starts at ${voltage(first)} and changes to ${voltage(last)} halfway through. This ${first === -1 ? "negative-to-positive rise" : "positive-to-negative fall"} is labeled ${bit.output}; its direction carries the bit value.`;
     case "differential":
-      return `${prefix} ${voltage(previous!)}. Input ${bit.input} ${bit.action === "inv" ? `adds a beginning inversion to ${voltage(first)} (inv)` : `keeps ${voltage(first)} at the beginning (no inv)`}. Halfway through, ${voltage(first)} changes to ${voltage(last)} (${bit.output}), as every bit must.`;
+      return `${prefix} ${voltage(previous!)}. Input ${bit.input} ${bit.action === "inv" ? `adds a beginning inversion to ${voltage(first)} (inv)` : `keeps ${voltage(first)} at the beginning (no inv)`}. Halfway through, ${voltage(first)} changes to ${voltage(last)} (${bit.output}), as every bit must. A ${bit.action === "inv" ? "solid circle (invert)" : "hollow circle (no invert)"} marks only the beginning decision.`;
     case "ami":
     case "pseudoternary": {
       const preceding = signal.bits

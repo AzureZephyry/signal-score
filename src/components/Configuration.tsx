@@ -78,7 +78,7 @@ export function Configuration({
         <p>
           Three clear steps.
           <br />
-          One sequence. Eight encodings.
+          One sequence. Ten waveforms.
         </p>
         <ol className="workflow-steps" aria-label="Encoding workflow">
           {["Set length", "Enter bits", "Read score"].map((label, i) => (

@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { encode } from "../lib/encoding";
-import { SCHEMES } from "../lib/schemes";
+import { GRAPHS, encodeGraphs } from "../lib/graphs";
 import {
   buildReport,
   columnCapacity,
@@ -12,16 +12,11 @@ import {
 import { diagram } from "./graphics";
 import { generatePdf } from "./pdf";
 import { PDFDocument } from "pdf-lib";
-const make = (
-  sequence: string,
-  settings: Partial<ReportSettings> = {},
-  initial: 1 | -1 = 1,
-) =>
-  buildReport(
-    sequence,
-    SCHEMES.map((s) => encode(s.id, sequence, initial)),
-    { ...DEFAULT_SETTINGS, ...settings },
-  );
+const make = (sequence: string, settings: Partial<ReportSettings> = {}) =>
+  buildReport(sequence, encodeGraphs(sequence), {
+    ...DEFAULT_SETTINGS,
+    ...settings,
+  });
 const cards = (model: ReturnType<typeof make>) =>
   model.pages
     .flatMap((p) => p.blocks)
@@ -31,7 +26,7 @@ describe("Report Studio complete-stream model", () => {
     "covers every bit once per selected scheme at length %i",
     (length) => {
       const model = make("11100101100010110".repeat(8).slice(0, length));
-      for (const scheme of SCHEMES) {
+      for (const scheme of GRAPHS) {
         const bits = cards(model)
           .filter((c) => c.scheme.id === scheme.id)
           .flatMap((c) => c.bits);
@@ -61,9 +56,15 @@ describe("Report Studio complete-stream model", () => {
     "retains full-stream states and labels across every boundary, initial %i",
     (initial) => {
       const sequence = "11100101100010110001000111010101".repeat(4);
-      const model = make(sequence, {}, initial);
-      for (const card of cards(model)) {
-        const full = encode(card.scheme.id, sequence, initial);
+      const model = make(sequence);
+      for (const card of cards(model).filter(
+        (c) => !c.scheme.stateful || c.scheme.initial === initial,
+      )) {
+        const full = encode(
+          card.scheme.algorithm,
+          sequence,
+          card.scheme.initial,
+        );
         expect(card.bits).toEqual(
           full.bits.slice(card.range.start, card.range.end),
         );

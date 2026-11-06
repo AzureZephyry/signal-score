@@ -40,7 +40,7 @@ test("beginner guides and contextual explanations connect selected bits to actua
     .getByLabel("Binary sequence", { exact: true })
     .fill("111001011000");
   await page.getByLabel("Binary sequence", { exact: true }).press("Enter");
-  await expect(page.locator(".scheme-summary")).toHaveCount(8);
+  await expect(page.locator(".scheme-summary")).toHaveCount(10);
   await page
     .getByRole("button", { name: "Source bit 4: 0", exact: true })
     .click();
@@ -54,20 +54,21 @@ test("beginner guides and contextual explanations connect selected bits to actua
   await expect(row.locator(".bit-explanation")).toContainText(
     "Input 0 adds a beginning inversion to +V (inv)",
   );
-  await page
-    .getByLabel("Differential Manchester initial voltage", { exact: true })
-    .selectOption("-1");
-  await expect(row.locator(".bit-explanation")).toContainText(
+  const low = page.locator('[data-scheme="differential-low"]');
+  await low
+    .getByRole("button", { name: "Explain encoding", exact: true })
+    .click();
+  await expect(low.locator(".bit-explanation")).toContainText(
     "previous bit ended at +V",
   );
-  await expect(row.locator(".bit-explanation")).toContainText(
+  await expect(low.locator(".bit-explanation")).toContainText(
     "inversion to −V",
   );
-  await expect(page.locator(".output-row .is-selected")).toHaveCount(8);
-  await row
+  await expect(page.locator(".output-row .is-selected")).toHaveCount(10);
+  await low
     .getByRole("button", { name: "Hide explanation", exact: true })
     .click();
-  await expect(row.locator(".focus-detail")).toHaveCount(0);
+  await expect(low.locator(".focus-detail")).toHaveCount(0);
 });
 
 test("both themes remain readable at the three requested laptop resolutions", async ({
@@ -235,7 +236,7 @@ test("125% and 200% zoom-equivalent reflow retains operable controls and aligned
       .getByLabel("Binary sequence", { exact: true })
       .fill("010101010101");
     await page.getByLabel("Binary sequence", { exact: true }).press("Enter");
-    await expect(page.locator("[data-scheme]")).toHaveCount(8);
+    await expect(page.locator("[data-scheme]")).toHaveCount(10);
     await page
       .getByRole("button", { name: "Source bit 12: 1", exact: true })
       .click();

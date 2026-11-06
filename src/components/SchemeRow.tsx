@@ -1,10 +1,10 @@
 import { AnimatedExplanation } from "./AnimatedExplanation";
-import type { EncodedSignal, InitialLevel, Scheme } from "../lib/types";
+import type { EncodedSignal, Graph } from "../lib/types";
 import { SCHEME_SUMMARIES, explainBit } from "../lib/explanations";
 import { Waveform } from "./Waveform";
 import { OutputTable } from "./OutputTable";
 interface Props {
-  scheme: Scheme;
+  scheme: Graph;
   index: number;
   signal: EncodedSignal;
   bitWidth: number;
@@ -13,7 +13,6 @@ interface Props {
   pinned: boolean;
   onPreview: (bit: number | null) => void;
   onSelect: (bit: number) => void;
-  onInitial: (level: InitialLevel) => void;
   onFocus: () => void;
 }
 export function SchemeRow({
@@ -26,7 +25,6 @@ export function SchemeRow({
   pinned,
   onPreview,
   onSelect,
-  onInitial,
   onFocus,
 }: Props) {
   const bit = selected !== null ? signal.bits[selected] : undefined;
@@ -49,20 +47,10 @@ export function SchemeRow({
         </div>
         <p className="scheme-rule">{scheme.rule}</p>
         <div className="scheme-tools">
-          {scheme.stateful && (
-            <label className="initial-control">
-              Initial voltage
-              <select
-                aria-label={`${scheme.name} initial voltage`}
-                value={signal.initial}
-                onChange={(event) =>
-                  onInitial(Number(event.target.value) as InitialLevel)
-                }
-              >
-                <option value={1}>+V (high)</option>
-                <option value={-1}>−V (low)</option>
-              </select>
-            </label>
+          {scheme.initial !== undefined && (
+            <span className="initial-state">
+              Before bit 1: {scheme.initial === 1 ? "+V (high)" : "−V (low)"}
+            </span>
           )}
           <button
             className="focus-button"
@@ -75,7 +63,14 @@ export function SchemeRow({
           </button>
         </div>
       </div>
-      <p className="scheme-summary">{SCHEME_SUMMARIES[scheme.id]}</p>
+      <p className="scheme-summary">{SCHEME_SUMMARIES[scheme.algorithm]}</p>
+      {scheme.stateful && (
+        <p className="inversion-legend">
+          <span>● Invert</span>
+          <span>○ No invert</span>
+          <span>At each bit start · initial polarity is before bit 1.</span>
+        </p>
+      )}
       <AnimatedExplanation open={focused}>
         <div className="focus-detail" id={`detail-${scheme.id}`}>
           <div>

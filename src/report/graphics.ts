@@ -1,4 +1,5 @@
 import { PAPER, PRINT_WIDTH, type SignalBlock } from "./model";
+import { inversionDecisions } from "../lib/inversion";
 import type { Voltage } from "../lib/types";
 export const palette = (gray: boolean) => ({
   paper: gray ? "#FFFFFF" : "#FAF8F1",
@@ -30,7 +31,10 @@ export function diagram(block: SignalBlock, width = PRINT_WIDTH, height = 80) {
       points.push([x(s.end), y(s.level)]);
       previous = s.level;
     }
-  return { x, y, points, bitWidth, height, width };
+  const markers = inversionDecisions(block.signal, block.bits).map(
+    (decision) => ({ ...decision, x: x(decision.index), y: y(decision.level) }),
+  );
+  return { x, y, points, markers, bitWidth, height, width };
 }
 const escape = (text: string) =>
   text
@@ -71,5 +75,14 @@ export function waveformSvg(
         `<text x="${d.x(b.index + 0.5)}" y="9" text-anchor="middle" fill="${p.ink}">${b.input}</text>`,
     )
     .join("");
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" role="img" aria-label="${escape(block.scheme.name)} waveform, bits ${block.range.start + 1} to ${block.range.end}"><rect width="100%" height="100%" fill="${p.paper}"/><g font-family="Courier New,monospace" font-size="9">${horizontal}${boundaries}${midpoints}${digits}</g>${showSignal ? `<polyline fill="none" stroke="${p.accent}" stroke-width="1.8" stroke-linejoin="miter" points="${d.points.map((point) => point.join(",")).join(" ")}"/>` : ""}</svg>`;
+  const markers = d.markers
+    .map(
+      (m) =>
+        `<circle data-bit="${m.index + 1}" data-decision="${m.invert ? "invert" : "hold"}" cx="${m.x}" cy="${m.y}" r="3.2" fill="${m.invert ? p.ink : p.paper}" stroke="${p.ink}" stroke-width="1.3"/>`,
+    )
+    .join("");
+  const legend = d.markers.length
+    ? `<g font-family="Arial,sans-serif" font-size="8" fill="${p.ink}"><circle cx="${PAPER.axis + 3}" cy="${height - 5}" r="2.7" fill="${p.ink}" stroke="${p.ink}"/><text x="${PAPER.axis + 11}" y="${height - 2}">Invert</text><circle cx="${PAPER.axis + 66}" cy="${height - 5}" r="2.7" fill="${p.paper}" stroke="${p.ink}"/><text x="${PAPER.axis + 74}" y="${height - 2}">No invert / bit start</text></g>`
+    : "";
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" role="img" aria-label="${escape(block.scheme.name)} waveform, bits ${block.range.start + 1} to ${block.range.end}"><rect width="100%" height="100%" fill="${p.paper}"/><g font-family="Courier New,monospace" font-size="9">${horizontal}${boundaries}${midpoints}${digits}</g>${showSignal ? `<polyline fill="none" stroke="${p.accent}" stroke-width="1.8" stroke-linejoin="miter" points="${d.points.map((point) => point.join(",")).join(" ")}"/>${markers}${legend}` : ""}</svg>`;
 }

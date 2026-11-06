@@ -11,7 +11,7 @@ async function generate(page: Page, bits = sample) {
   await page
     .getByRole("button", { name: "Generate waveforms", exact: true })
     .click();
-  await expect(page.locator("[data-scheme]")).toHaveCount(8);
+  await expect(page.locator("[data-scheme]")).toHaveCount(10);
   await expect(page.locator("#score-controls")).toBeFocused();
   await page.evaluate(() => document.fonts.ready);
 }
@@ -206,7 +206,7 @@ for (const theme of ["day", "night"]) {
     expect(
       Math.abs((await page.evaluate(() => scrollY)) - beforeSelect),
     ).toBeLessThan(2);
-    await expect(page.locator(".output-row .is-selected")).toHaveCount(8);
+    await expect(page.locator(".output-row .is-selected")).toHaveCount(10);
     expect(
       await page.locator("[data-scheme]").evaluateAll((rows) =>
         rows.every((row) => {
@@ -220,11 +220,9 @@ for (const theme of ["day", "night"]) {
         }),
       ),
     ).toBe(true);
-    await page
-      .getByLabel("Polar NRZ-I initial voltage", { exact: true })
-      .selectOption("-1");
+
     await expect(
-      page.locator('[data-scheme="nrz-i"] [data-output]').first(),
+      page.locator('[data-scheme="nrz-i-low"] [data-output]').first(),
     ).toHaveText("pos");
     await page.locator("#row-nrz-i .score-controls-link").click();
     await expect(
@@ -254,7 +252,7 @@ for (const theme of ["day", "night"]) {
     await expect(page.getByRole("dialog")).toBeVisible();
     await expect(
       page.getByRole("dialog").locator(".report-initials"),
-    ).toContainText("initially low");
+    ).toContainText("Initially Low");
     await page
       .getByRole("button", { name: "Close Report Studio", exact: true })
       .click();
@@ -314,7 +312,7 @@ for (const theme of ["day", "night"]) {
     }
   });
 
-  test(`${theme}: coarse-pointer landscape keeps normal flow and all eight schemes reachable`, async ({
+  test(`${theme}: coarse-pointer landscape keeps normal flow and all ten graphs reachable`, async ({
     page,
   }) => {
     test.setTimeout(60_000);
@@ -335,9 +333,11 @@ for (const theme of ["day", "night"]) {
         "unipolar",
         "nrz-l",
         "nrz-i",
+        "nrz-i-low",
         "rz",
         "manchester",
         "differential",
+        "differential-low",
         "ami",
         "pseudoternary",
       ]) {

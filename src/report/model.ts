@@ -1,11 +1,11 @@
 import type {
   EncodedBit,
   EncodedSignal,
-  Scheme,
-  SchemeId,
+  Graph,
+  GraphId,
   Voltage,
 } from "../lib/types";
-import { SCHEMES } from "../lib/schemes";
+import { GRAPHS, signalGraphId } from "../lib/graphs";
 import { explainBit } from "../lib/explanations";
 import { validateBits } from "../lib/validation";
 export type ReportLayout = "compact" | "detailed" | "study";
@@ -14,7 +14,7 @@ export interface ReportSettings {
   content: "report" | "worksheet" | "answer-key";
   layout: ReportLayout;
   organization: "range" | "scheme";
-  schemes: SchemeId[];
+  schemes: GraphId[];
   explanations: boolean;
   tables: boolean;
   positions: boolean;
@@ -26,7 +26,7 @@ export const DEFAULT_SETTINGS: ReportSettings = {
   content: "report",
   layout: "detailed",
   organization: "range",
-  schemes: SCHEMES.map((s) => s.id),
+  schemes: GRAPHS.map((s) => s.id),
   explanations: true,
   tables: true,
   positions: true,
@@ -55,7 +55,7 @@ export interface BitRange {
 }
 export interface SignalBlock {
   kind: "signal";
-  scheme: Scheme;
+  scheme: Graph;
   signal: EncodedSignal;
   bits: EncodedBit[];
   range: BitRange;
@@ -68,7 +68,7 @@ export interface SignalBlock {
 }
 export interface ReasoningBlock {
   kind: "reasoning";
-  scheme: Scheme;
+  scheme: Graph;
   range: BitRange;
   entries: { index: number; lines: string[] }[];
   height: number;
@@ -86,7 +86,7 @@ export interface ReportModel {
   ranges: BitRange[];
   columns: number;
   pages: ReportPage[];
-  schemes: Scheme[];
+  schemes: Graph[];
 }
 export const plain = (text: string) =>
   text
@@ -144,7 +144,7 @@ export function buildReport(
     !["range", "scheme"].includes(settings.organization)
   )
     throw new Error("Choose a valid report layout and organization.");
-  const schemes = SCHEMES.filter((s) => settings.schemes.includes(s.id));
+  const schemes = GRAPHS.filter((s) => settings.schemes.includes(s.id));
   if (!schemes.length) throw new Error("Select at least one encoding scheme.");
   if (
     new Set(settings.schemes).size !== settings.schemes.length ||
@@ -152,7 +152,7 @@ export function buildReport(
   )
     throw new Error("The scheme selection is invalid.");
   const labels = signals
-    .filter((signal) => settings.schemes.includes(signal.id))
+    .filter((signal) => settings.schemes.includes(signalGraphId(signal)))
     .flatMap((signal) =>
       signal.bits.flatMap((bit) => [bit.output, bit.action ?? ""]),
     );
@@ -194,11 +194,13 @@ export function buildReport(
     page.used += block.height;
   };
   for (const { range, scheme } of pairs) {
-    const signal = signals.find((s) => s.id === scheme.id);
+    const signal = signals.find((s) => signalGraphId(s) === scheme.id);
     if (
       !signal ||
       signal.bits.length !== sequence.length ||
-      signal.bits.some((b, i) => b.index !== i || b.input !== sequence[i])
+      signal.bits.some((b, i) => b.index !== i || b.input !== sequence[i]) ||
+      signal.id !== scheme.algorithm ||
+      signal.initial !== scheme.initial
     )
       throw new Error(
         "The generated score does not match the report sequence. Regenerate the score first.",
@@ -220,7 +222,7 @@ export function buildReport(
     }
     let state = [
       signal.initial !== undefined
-        ? `Initial level ${levelName(signal.initial)}.`
+        ? `Initial level ${levelName(signal.initial)} before bit 1.`
         : "",
       range.start
         ? `Continued at bit ${range.start + 1}; previous level ${levelName(entry!)}.`
@@ -236,7 +238,7 @@ export function buildReport(
     if (settings.content === "worksheet")
       state = [
         signal.initial !== undefined
-          ? `Initial level ${levelName(signal.initial)}.`
+          ? `Initial level ${levelName(signal.initial)} before bit 1.`
           : "",
         range.start
           ? `Continued at bit ${range.start + 1}; carry forward your previous signal state.`
