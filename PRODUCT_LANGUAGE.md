@@ -1,5 +1,8 @@
 # Product language refinement
 
+> Historical implementation record. Counts, controls and limitations describe that revision. Current behavior and release verification are in [README.md](README.md), [QA.md](QA.md), and [ten-graph notes](docs/TEN_GRAPHS.md).
+
+
 Signal / Score is positioned as an interactive digital signal laboratory for exploring how binary information becomes electrical waveforms.
 
 ## User-facing changes

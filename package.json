@@ -11,7 +11,9 @@
     "test": "vitest run",
     "test:browser": "playwright test",
     "test:production": "npm run build && playwright test --config playwright.production.config.ts",
-    "format": "prettier --write src tests *.ts *.json *.md index.html"
+    "format": "prettier --write src tests *.ts *.json *.md index.html",
+    "licenses:generate": "node scripts/generate-third-party-notices.mjs",
+    "licenses:check": "node scripts/generate-third-party-notices.mjs --check"
   },
   "dependencies": {
     "@fontsource-variable/manrope": "^5.3.0",
@@ -33,6 +35,9 @@
     "prettier": "^3.9.10",
     "typescript": "~5.9.3",
     "vite": "^7.1.0",
-    "vitest": "^3.2.4"
+    "vitest": "4.1.12"
+  },
+  "engines": {
+    "node": "^22.12.0 || >=24.0.0"
   }
 }

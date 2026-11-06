@@ -1,5 +1,27 @@
 # Verification report
 
+## Release candidate — November 6, 2026
+
+Baseline main: `eca36e5a83338b8dc8ac53f0954e7858be3499d6`. Candidate: `chore/v1-release-hardening`. Application source and production package versions are unchanged. Changes concern the Vitest subtree, third-party notices and documentation.
+
+Full and production-only audits report zero findings after Vitest 4.1.12 and clean npm ci. All 206 unit tests pass with no assertion/config edits. Strict TypeScript and production build pass. The full production-browser suite passes all 96 tests in 7.2 minutes with two workers and zero retries. Clean installation, full dependency tree and license reproduction checks all exit successfully. The approved baseline had 206 unit and 96 browser tests; dated counts below are historical.
+
+The owner chose no application license; LICENSE remains absent. Third-party notices are separately preserved.
+
+Candidate evidence:
+
+- All ten graphs, both NRZ-I and Differential Manchester polarities, solid/hollow marker geometry, both reference sequences, validation, GSAP motion, playback/seeking, scheme navigation, inspection, themes and 128-bit segmentation pass the unchanged suites.
+- Android-oriented checks cover 320/360/375/390/412/430px, changing heights, landscape, normal-flow controls, Report Studio and shared horizontal alignment. These are automated Chromium checks; the owner's earlier physical Android approval is preserved, not claimed as a new physical test.
+- Fresh local 10100110 and 00110011 PDF/DOCX samples each have five PDF pages, ten editable Word tables, ten SVG graphics and 32 per-bit inversion circles. PDF marker/table pages were rendered with Poppler and visually reviewed. Microsoft Word opened the fresh samples read-only and reported five pages, ten editable tables and ten inline graphics per report. No changes were made to the document generators.
+- The production site was independently checked at main eca36e5: anonymous desktop/mobile journeys in both themes passed graph order, markers, synchronized inspection, actual playback, theme persistence, worksheets/answer-key settings and real PDF/Word downloads, with no captured page/console errors.
+- All 16 emitted JS/CSS/font assets have identical names, sizes and SHA-256 hashes to the approved production build. Only the separate 75,681-byte third-party notice text was added to dist. No chunk-size warnings or credential-pattern matches were found; this scan is not a proof that secrets can never exist.
+- Existing npm host policy warns that core-js/esbuild postinstall scripts are blocked. No policy override was added; the clean install, platform binary, type/build and tests succeed. Poppler reports missing optional Symbol/ArialUnicode display fonts; reviewed report pages use the intended readable fonts with no missing glyphs.
+- Link checks pass for current and historical Markdown/images. New notice-script/package formatting checks pass. No lint task is configured. Lockfile and notice checksums are in docs/RELEASE_CANDIDATE.md.
+
+Raw logs, audit JSON, bundle fingerprints, screenshots, sample documents and Word statistics are under ignored evidence/release-hardening/. Earlier records below are retained with their original dates and limitations.
+
+## Historical verification records
+
 ## GitHub publication preparation
 
 Verified October 31, 2026 (Asia/Manila), before publishing the branches.
@@ -16,7 +38,7 @@ Verified October 31, 2026 (Asia/Manila), before publishing the branches.
 
 The sections below preserve prior implementation and document-verification history.
 
-## Report Studio — latest revision
+## Historical Report Studio revision
 
 Verified October 31, 2026 (Asia/Manila).
 
@@ -48,7 +70,7 @@ The preview is explicitly representative. Word editing/version/font changes can 
 
 The sections below record preceding revisions.
 
-## Product language refinement — latest revision
+## Historical product language refinement
 
 - Production build and strict TypeScript: passed.
 - Unit suite: 138 passed.

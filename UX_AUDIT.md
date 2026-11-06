@@ -1,5 +1,8 @@
 # UX audit and implementation
 
+> Historical implementation record. Counts, controls and limitations describe that revision. Current behavior and release verification are in [README.md](README.md), [QA.md](QA.md), and [ten-graph notes](docs/TEN_GRAPHS.md).
+
+
 The existing application was inspected and interacted with using headless Playwright **before source changes** at desktop 1440×1000, tablet 768×1024 and mobile 390×844. No interactive Computer Use was used. The journey covered opening, length confirmation, invalid and valid binary entry, generation, all eight schemes, output tables, both stateful controls, playback, bit selection, and returning to edit/regenerate.
 
 ## Findings and fixes

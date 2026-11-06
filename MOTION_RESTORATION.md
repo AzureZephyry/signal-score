@@ -1,5 +1,8 @@
 # Motion restoration — SIGNAL / SCORE
 
+> Historical implementation record. Counts, controls and limitations describe that revision. Current behavior and release verification are in [README.md](README.md), [QA.md](QA.md), and [ten-graph notes](docs/TEN_GRAPHS.md).
+
+
 Implemented October 30, 2026 (Asia/Manila). This revision preserves the current Kinetic Signal Score layout, typography, palette, themes, education and encoding conventions.
 
 ## Exact regression cause
