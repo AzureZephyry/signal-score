@@ -66,3 +66,7 @@ The approved phone toolbar rules in `mobile-controls.css` remain unchanged. Auto
 - Both 8-bit reference samples produced five-page PDFs. All pages were rendered and visually reviewed.
 - Both DOCX samples opened in Microsoft Word: five pages, ten editable tables and ten graphics each. All Word-rendered pages were visually reviewed.
 - At 390 × 844 in both themes, the toolbar remained static at 249px, with zero page-wide horizontal overflow. Physical-phone acceptance of this new feature remains a separate review.
+
+## Release hardening
+
+The v1 candidate changes no graph definitions, algorithms or marker rendering. Vitest is upgraded to 4.1.12 to resolve test-tool advisories; third-party notices and current documentation are added. The executed checks above describe the approved ten-graph baseline; QA.md records candidate verification. No application license is granted under the owner's explicit decision.

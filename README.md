@@ -4,6 +4,8 @@ An interactive digital signal laboratory for exploring how binary information be
 
 Compose a binary sequence, compare ten waveform graphs across eight encoding families, and follow each bit through its voltage states. Signal / Score combines precise scientific diagrams with the **Kinetic Signal Score** identity: expressive typography, warm paper, ink, vermilion and olive, with coordinated motion and an accessible Night Mode.
 
+**Live application: [signal-score-seven.vercel.app](https://signal-score-seven.vercel.app/)**
+
 ## Key features
 
 - **Ten synchronized waveform graphs** with accurate SVG step waveforms, voltage axes, bit boundaries and aligned input/output tables.
@@ -31,20 +33,26 @@ See [graph definitions and reference verification](docs/TEN_GRAPHS.md) for the o
 
 These are actual application captures. Print previews are representative; exported PDF typography and edited Word pagination can differ.
 
-## Supported encoding schemes
+## Ten graphs across eight encoding families
 
-| Scheme                  | Convention                                                     |
-| ----------------------- | -------------------------------------------------------------- |
-| Unipolar NRZ            | 1 = +V; 0 = 0V                                                 |
-| Polar NRZ-L             | 1 = -V; 0 = +V                                                 |
-| Polar NRZ-I             | 1 inverts at bit start; 0 holds the preceding level            |
-| Polar RZ                | 1 starts at +V, 0 at -V; both return to 0V halfway through     |
-| Manchester              | 1 = -V to +V; 0 = +V to -V at midpoint                         |
-| Differential Manchester | 0 inverts at bit start; 1 holds; every bit inverts at midpoint |
-| Bipolar AMI             | 0 = 0V; successive ones alternate +V and -V                    |
-| Bipolar Pseudoternary   | 1 = 0V; successive zeros alternate +V and -V                   |
+| No. | Graph | Convention |
+| --- | --- | --- |
+| 01 | Unipolar NRZ | 1 = +V; 0 = 0V |
+| 02 | Polar NRZ-L | 1 = -V; 0 = +V |
+| 03 | Polar NRZ-I — Initially High | Pre-bit +V; 1 inverts, 0 holds |
+| 04 | Polar NRZ-I — Initially Low | Pre-bit -V; 1 inverts, 0 holds |
+| 05 | Polar RZ | 1 starts +V, 0 starts -V; second half returns to 0V |
+| 06 | Manchester | 1 rises -V to +V; 0 falls +V to -V at midpoint |
+| 07 | Differential Manchester — Initially High | Pre-bit +V; 0 inverts at start; every bit inverts at midpoint |
+| 08 | Differential Manchester — Initially Low | Pre-bit -V; 0 inverts at start; every bit inverts at midpoint |
+| 09 | Bipolar AMI | 0 = 0V; successive ones alternate +V and -V |
+| 10 | Pseudoternary | 1 = 0V; successive zeros alternate +V and -V |
 
-Both stateful polar schemes support initially high and initially low. The first nonzero AMI/Pseudoternary pulse is positive. Voltages are normalized relative levels, not measured hardware signals.
+Both initial variants are visible together. Initial polarity applies before the entire stream, not before each segment. The first AMI/Pseudoternary nonzero pulse is positive. Voltages are normalized, not measured hardware signals.
+
+## Mobile interface
+
+Phone controls scroll naturally with the document. Previous / selector / Next, Edit / Export, playback and contextual inspection remain accessible without a large pinned panel. Waveforms and tables share horizontal scrolling with readable bit widths through 128 bits. The owner approved the refinement on a physical Android phone; automated coverage uses Chromium emulation. See [mobile behavior](docs/MOBILE_CONTROLS.md).
 
 ## Technology stack
 
@@ -60,7 +68,7 @@ No backend, account, database or external runtime font service is required. Docu
 
 ## Installation and local development
 
-Use Node.js **22.12 or newer**, with npm; the project is verified on Node 24. The lockfile is committed for reproducible installation.
+Use Node.js **22.12+ within Node 22, or Node 24+**, with npm; the project is verified on Node 24. The lockfile is committed for reproducible installation.
 
 ```sh
 git clone https://github.com/AzureZephyry/signal-score.git
@@ -82,7 +90,7 @@ npm run preview
 
 The build includes strict TypeScript checking. Preview the generated site at the printed URL, normally **http://127.0.0.1:4173**. `dist/` contains the static website, bundled fonts and font licenses. Serve it over HTTP; opening `index.html` directly through `file://` is not supported. Relative asset paths support hosting under a subdirectory.
 
-Hosting is not configured as part of the repository setup.
+Vercel automatically deploys main to the live website. Pull requests receive previews, which may need a review link under deployment protection. Release preparation does not change production configuration.
 
 ## Automated testing
 
@@ -118,7 +126,7 @@ See [Report Studio architecture and verification](REPORT_STUDIO.md).
 
 ```text
 src/
-  lib/          Pure encoders, normalized intervals, validation and explanations
+  lib/          Eight encoders, ten graph definitions, inversion decisions and validation
   hooks/        Playback, kinetic motion, reduced-motion and theme orchestration
   components/   Input, SVG waveforms, aligned tables and shared controls
   report/       Shared report model, segmentation, pagination, graphics and exports
@@ -138,14 +146,24 @@ Encoding data is independent of animation. SVG paths use discrete voltage interv
 
 ## Branch and release workflow
 
-`main` holds the stable baseline; `feature/report-studio` contains the approved Report Studio work for review. The pull request is intentionally left open for final approval. A future **v1.0.0** release follows review and merge; this setup creates no release tag or deployment.
+Main contains merged Report Studio (PR #1), mobile controls (PR #2), and ten graphs with markers (PR #3). Hardening is reviewed through a separate PR. No tag or GitHub release is published until explicitly approved. See the [release checklist](RELEASE_CHECKLIST.md), [draft release notes](docs/RELEASE_NOTES_v1.0.0.md) and [security assessment](docs/DEPENDENCY_SECURITY.md).
 
-See the [release checklist](RELEASE_CHECKLIST.md).
+## Verification baseline
+
+The approved baseline passed 206 unit and 96 browser tests. [QA.md](QA.md) records current candidate evidence. Full audits include development tools; production-only audits do not.
+
+```sh
+npm audit
+npm audit --omit=dev
+npm run licenses:check
+```
 
 ## Future development
 
-Potential follow-ups include broader browser/device coverage, automated repository CI, a closer document preview, and hosting configuration after the first stable merge. These are planned directions, not currently implemented features.
+Broader browser/device coverage, repository CI and a closer document preview are possible follow-ups, not implemented features.
 
-## License
+## License status
 
-No application license has been selected or added. Bundled font licenses remain under [`public/licenses/`](public/licenses/). A project license decision is separate from publishing the source.
+**No application license is granted.** The owner explicitly retains reuse control while keeping GitHub public. Root LICENSE remains absent. Viewing or forking through GitHub does not grant general permission to reuse, modify, redistribute or commercially exploit the application; platform terms and legal exceptions still apply. Ask the owner for permission.
+
+Third-party grants remain independent. Preserve [notices](THIRD_PARTY_NOTICES.md), [bundled texts](public/licenses/THIRD-PARTY-NOTICES.txt) and original font OFL files. GSAP has separate terms and is not relicensed by this repository. See [license assessment](docs/LICENSE_ASSESSMENT.md).

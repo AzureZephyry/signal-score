@@ -1,6 +1,6 @@
 # Mobile result controls
 
-The comparison controls use normal document flow on screens up to 760px wide, and on coarse-pointer screens up to 1100px wide. Desktop positioning remains unchanged. This change is awaiting physical Android review.
+The comparison controls use normal document flow on screens up to 760px wide, and on coarse-pointer screens up to 1100px wide. Desktop positioning remains unchanged. The owner reviewed and approved this refinement on a physical Android phone before PR #2 merged on November 1, 2026. PR #3 subsequently extended navigation to ten graphs.
 
 ## Cause and supporting evidence
 
@@ -48,9 +48,9 @@ These captures use the same 390 × 844 viewport with the toolbar aligned to its 
 
 ## Regression coverage and acceptance
 
-`tests/mobile-controls.spec.ts` adds an Android-oriented Chrome project covering six portrait widths in both themes, 128-bit playback/inspection/alignment, initial conditions, editing, Report Studio, viewport-height changes, landscape and navigation through all eight schemes. Existing desktop, mobile, motion and document-export suites remain enabled. The short landscape test checks that any remaining normal-flow toolbar edge stays above the scheme and moves with scrolling; it does not mistake that edge for a sticky overlay.
+`tests/mobile-controls.spec.ts` adds an Android-oriented Chrome project covering six portrait widths in both themes, 128-bit playback/inspection/alignment, initial conditions, editing, Report Studio, viewport-height changes, landscape and navigation through all ten graphs. Existing desktop, mobile, motion and document-export suites remain enabled. The short landscape test checks that any remaining normal-flow toolbar edge stays above the scheme and moves with scrolling; it does not mistake that edge for a sticky overlay.
 
-Physical Android acceptance is still required through the feature preview: verify address-bar expansion/collapse, portrait/landscape scrolling, visible controls and plot space, selection, seeking and Report Studio in both themes. Emulation and resized viewport measurements cannot certify those behaviors on a physical device.
+Physical Android acceptance was completed by the owner before PR #2 merged. Future device reviews should still verify address-bar expansion/collapse, portrait/landscape scrolling, visible controls and plot space, selection, seeking and Report Studio in both themes. Emulation and resized viewport measurements cannot certify those behaviors on a physical device.
 
 ## Executed verification — 2026-11-01
 
@@ -59,4 +59,4 @@ Physical Android acceptance is still required through the feature preview: verif
 - All 82 production browser tests passed: 64 existing desktop/mobile regressions and 18 added Android-oriented cases. The complete run used one worker and no retries.
 - Actual PDF/Word downloads, worksheet/answer-key exports, both themes, measured GSAP motion, alignment, keyboard interaction and the 128-bit workflow passed.
 - Screenshots were reviewed at 320px and 390px, both themes, and desktop. All measured visible toolbar targets were at least 44 × 44 CSS pixels. Desktop toolbar height and initial plot position match the baseline.
-- This is automated Chrome coverage, not certification on a physical Android device. Physical review remains the acceptance gate.
+- This is automated Chrome coverage, not certification on a physical Android device. These original measurements preceded the owner's later phone approval. Current candidate checks are in ../QA.md.

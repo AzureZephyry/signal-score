@@ -1,15 +1,15 @@
 # Report Studio
 
-Report Studio extends the existing Signal / Score application. All original encoding functions, geometry, motion hooks, themes and educational explanation functions remain unchanged. App integration adds a generated-score-only Export Report action and an accessible native dialog.
+Report Studio extends the existing Signal / Score application. It reuses pure encoders and complete-stream graph calculations; playback state never determines document content. App integration adds a generated-score-only Export Report action and an accessible native dialog.
 
-## Local checkpoint
+## Historical initial checkpoint
 
-The project had no Git repository. A local baseline was initialized on `main` and committed as `b2cd578` before feature changes. Work is on `feature/report-studio`. Existing unrelated files, prior archives and historical checkpoints were preserved; no remote was configured or contacted, and the separate C++ project was not touched.
+The project had no Git repository. A local baseline was initialized on `main` and committed as `b2cd578` before feature changes. The initial work was on `feature/report-studio`; PR #1 is merged and PR #3 added ten graphs. Existing unrelated files, prior archives and historical checkpoints were preserved; no remote was configured or contacted, and the separate C++ project was not touched.
 
 ## Features
 
-- Browser-local PDF and editable Word export from the currently generated sequence and current independent initial levels.
-- Compact, Detailed (default), Study; organization by bit range or by scheme; all eight or custom selection.
+- Browser-local PDF and editable Word export from the currently generated sequence and both fixed High/Low graph variants.
+- Compact, Detailed (default), Study; organization by bit range or by scheme; all ten graphs or independent custom selection.
 - Optional explanations, per-bit input/output/action tables, original position rows, Study reasoning and grayscale printing.
 - Navigable representative preview and complete page outline. The UI explicitly distinguishes this from exact PDF/Word rendering.
 - Empty practice worksheets with larger grids and separate answer-key export. Worksheet output/action cells are blank, no signal path or per-bit reasoning is included, diagram alt text has no answers, and continuation prompts omit computed preceding states.
@@ -43,9 +43,9 @@ Verified official documentation and release pages before installation:
 - [jsPDF 4.2.1 release](https://github.com/parallax/jsPDF/releases/tag/v4.2.1) and [API documentation](https://parallax.github.io/jsPDF/docs/index.html).
 - [docx 9.15.0 release](https://github.com/dolanmiu/docx/releases/tag/9.15.0), [browser-capable Packer](https://docx.js.org/api/classes/index.Packer.html), and the official SVG-with-PNG-fallback example.
 
-Both run in the existing Node 24 / TypeScript / Vite project and are dynamically loaded only for export. `pdf-lib` and `fflate` are development-only inspectors. The newly added fflate was updated to its patched version after checking advisories. Production dependency audit reports zero vulnerabilities. Existing development-tool advisories in the inherited Vitest/tinypool stack were not resolved by an unrelated major-version tool migration.
+Both run in the existing Node 24 / TypeScript / Vite project and are dynamically loaded only for export. `pdf-lib` and `fflate` are development-only inspectors. The newly added fflate was updated to its patched version after checking advisories. Production dependency audit reports zero vulnerabilities. That revision left development advisories unresolved. Release hardening resolves them through Vitest 4.1.12; see docs/DEPENDENCY_SECURITY.md.
 
-## Document evidence
+## Historical document evidence — eight-result revision
 
 Actual files under `evidence/reports/` were generated through the production browser, opened in Word invisibly, exported to PDF and rendered with bundled Poppler. The bundled `render_docx.py` was attempted but could not run because LibreOffice is not bundled on this Windows host; Microsoft Word 16 was used for real layout verification instead. All editable tables and inline graphics were counted in Word.
 
@@ -61,6 +61,10 @@ The three main examples yield 28 PDF/Word-rendered page images; worksheet/key ad
 
 ## Test scope and limits
 
-The automated model tests cover 1/12/32/65/128-bit input, all layouts, scheme filtering, original sample labels, both initial levels, every segment boundary, bipolar gaps, orthogonal geometry, complete coverage without duplicates/omissions, invalid/mismatched snapshots and grounded Study reasoning. Container tests parse actual PDF and DOCX bytes, inspect page dimensions/counts, editable tables, headings, SVG/PNG media, optional content and worksheet answer suppression. Browser tests inspect actual downloaded bytes, test initial conditions and a reset playback position, preview pages, selection, settings, both themes, keyboard handling, maximum input, worksheets and answer keys. Final verification: **158 unit tests passed; all 64 production browser tests passed**. A final mobile Close-button spacing refinement was rebuilt and its 10 affected report/responsive checks also passed. See `QA.md` for the full audit, including an earlier timing-sensitive sampling failure during concurrent document rendering.
+The automated model tests cover 1/12/32/65/128-bit input, all layouts, scheme filtering, original sample labels, both initial levels, every segment boundary, bipolar gaps, orthogonal geometry, complete coverage without duplicates/omissions, invalid/mismatched snapshots and grounded Study reasoning. Container tests parse actual PDF and DOCX bytes, inspect page dimensions/counts, editable tables, headings, SVG/PNG media, optional content and worksheet answer suppression. Browser tests inspect actual downloaded bytes, test initial conditions and a reset playback position, preview pages, selection, settings, both themes, keyboard handling, maximum input, worksheets and answer keys. Historical verification: **158 unit tests passed; all 64 production browser tests passed**. Current candidate results are in QA.md. A final mobile Close-button spacing refinement was rebuilt and its 10 affected report/responsive checks also passed. See `QA.md` for the full audit, including an earlier timing-sensitive sampling failure during concurrent document rendering.
 
 The preview is representative. Edited Word files or different Word versions/fonts may reflow; explicit page breaks and conservative spacing reduce this. Physical-device Safari is not tested. Reports use normalized levels, not measured hardware timing or fixed real voltage magnitudes. PDF text is selectable but a PDF/UA tagging/certification claim is not made. Existing 128-bit limit remains.
+
+## Current ten-graph model
+
+Ten identified graphs reuse eight algorithms. NRZ-I and Differential Manchester High/Low graphs are independently selectable. Shared decisions feed native PDF circles and SVG/PNG Word graphics. Filled means invert at bit start; outlined means hold. Legends and initial-before-bit-1 labels appear in relevant reports. Worksheets omit answer traces/circles and computed continuation answers; answer keys restore them. Complete-stream-first segmentation preserves absolute positions, polarity and circle types across pages. Both eight-bit reference samples opened in Word at the approved baseline: five pages, ten editable tables and ten graphics each. Candidate exports, every layout and 128-bit continuity are checked in QA.md.

@@ -1,5 +1,8 @@
 # Readability, discoverability and educational UX refinement
 
+> Historical implementation record. Counts, controls and limitations describe that revision. Current behavior and release verification are in [README.md](README.md), [QA.md](QA.md), and [ten-graph notes](docs/TEN_GRAPHS.md).
+
+
 This revision preserves Kinetic Signal Score, both themes, GSAP playback, the eight encoders, the length-first contract, initial controls, synchronized graph/table inspection and the earlier UX improvements.
 
 ## Problems corrected

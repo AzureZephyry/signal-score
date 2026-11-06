@@ -2,7 +2,7 @@
 
 ## Identity
 
-**SIGNAL / SCORE** treats a binary sequence as a score performed eight ways. The editorial heading, “Bits into rhythm.”, describes the transformation without standing between the user and the simulator. The introduction is compact; the length control follows immediately. Numeric folios, fine rules, and a shared time grid establish a printed scientific score rather than a dashboard.
+**SIGNAL / SCORE** treats a binary sequence as ten waveform graphs across eight encoding families. The editorial heading, “Bits into rhythm.”, describes the transformation without standing between the user and the simulator. The introduction is compact; the length control follows immediately. Numeric folios, fine rules, and a shared time grid establish a printed scientific score rather than a dashboard.
 
 The implemented composition uses flat surfaces, square controls, generous page gutters, and ruled sections. There are no floating cards, gradients, glows, glass effects or ornamental charts. The opening generative line drawing uses the same rectilinear language as the real signal geometry.
 
@@ -44,14 +44,14 @@ GSAP drives coordinated, interruptible editorial choreography:
 1. Masked title tokens rise and rotate into place with a deliberate stagger. Illustration digits settle in 3D while two SVG signal paths draw; captions and workflow labels join the same entrance.
 2. Length confirmation reveals binary entry in a short upward movement.
 3. Generated source glyphs rise and rotate within stationary, immediately usable buttons. Score headings and scheme folios enter in coordination.
-4. All eight colored waveform clip masks advance automatically on the same linear bit clock. Complete contrasting dashed reference paths and all output labels remain visible. A moving playhead and active source, SVG digit, output and action cells connect each bit to its signal. The data and geometry never morph or interpolate.
-5. Play, Pause, Reset, Step and Show all make drawing deterministic and interruptible. Pinning a bit completes and pauses the reveal, then pulses its interval and aligned output. Scheme navigation, input return and initial-state updates have short spatial/stroke emphasis. Explanation panels expand and collapse with interruptible height transitions; closed content is inert during exit.
+4. All ten colored waveform clip masks advance automatically on the same linear bit clock. Complete contrasting dashed reference paths and all output labels remain visible. A moving playhead and active source, SVG digit, output and action cells connect each bit to its signal. The data and geometry never morph or interpolate.
+5. Play, Pause, Reset, Step and Show all make drawing deterministic and interruptible. Pinning a bit completes and pauses the reveal, then pulses its interval and aligned output. Scheme navigation and input return have short spatial/stroke emphasis. Explanation panels expand and collapse with interruptible height transitions; closed content is inert during exit.
 
 Reduced motion suppresses entrance animation and reveals generated signals immediately. Hover and focus states remain direct; no decorative looping animation competes with the educational task.
 
 ## Accessibility and behavior
 
-Visible labels, clear errors, live count feedback, semantic tables, independently labeled initial controls, keyboard-operable SVG bit intervals and visible focus rings support interaction. Invalid input stays visible with a useful correction message. The source sample is available only after confirming a 12-bit length. The score retains its prior source until the user explicitly updates it, with a visible stale-input notice.
+Visible labels, clear errors, live count feedback, semantic tables, explicit pre-bit initial-state labels, keyboard-operable SVG bit intervals and visible focus rings support interaction. Invalid input stays visible with a useful correction message. The source sample is available only after confirming a 12-bit length. The score retains its prior source until the user explicitly updates it, with a visible stale-input notice.
 
 Responsive layouts are verified at 320, 390, 768, 1024 and 1440 pixels. Overflow belongs to the single comparison region; the page itself should never require horizontal scrolling.
 
@@ -81,7 +81,7 @@ Night Mode uses charcoal, warm ivory, muted coral and botanical olive. A short c
 
 A persistent three-step progression makes the length-first contract visible. Validation returns focus to the field; Enter generates directly. Generation brings the score heading into view and the identity becomes a compact typographic line, reducing repeated scrolling while keeping the original opening composition.
 
-The score's sticky toolbar combines scheme jumps, playback seeking, bit navigation and a return-to-input action. Pinned bit selection survives hover and initial-state changes, and selecting an offscreen bit scrolls the shared score to it. Voltage axes and table row labels remain visible horizontally. Primary touch controls use at least 44×44px targets.
+The score controls combine graph jumps, playback seeking, bit navigation and input return. They flow with the phone document and remain sticky on desktop. Pinned selection survives hover, and selecting an offscreen bit scrolls the shared score to it. Voltage axes and table row labels remain visible horizontally. Primary touch controls use at least 44×44px targets.
 
 Generated and recomputed signal information is readable immediately. Normal-motion generation automatically draws colored signals over complete reference paths; full-contrast table labels are available throughout. Replay repeats the choreography, and Show all completes it immediately. Pinning a bit completes and pauses the reveal so its voltage can be inspected. Reset, Step and seek use the same logical clock. Roving keyboard focus exposes every bit through arrows, Home and End without a long Tab sequence.
 
@@ -108,3 +108,7 @@ The “Number of bits” field uses a square, fully bordered raised surface, 12�
 ## Report Studio and print
 
 The existing score gains an Export Report action and a native modal studio. The studio inherits semantic Day/Night surfaces, typography, controls and focus tokens. Its two-column settings/preview workspace becomes a vertically scrolling composition on mobile; the printed page scrolls independently to preserve diagram readability. Print is deliberately separate: A4 landscape, restrained warm plotting surfaces, ink/vermilion/olive, fine grids, standard editorial sans typography and monospace data. Layout and font metrics determine bit capacity; the data and complete-stream continuity remain unchanged. Representative previews state their limits. Worksheets reuse the same axes/ranges with empty grids and blank answer cells.
+
+## Ten graphs and mobile navigation
+
+NRZ-I and Differential Manchester have fixed High and Low variants. Initial polarity is before the entire stream. Filled and outlined SVG circles mean invert / no invert at beginning boundaries and resulting levels. Playback shares the signal bit clock. Reports preserve this notation; blank worksheets omit answer markers. Phone controls use normal flow; desktop retains its compact sticky toolbar. See docs/TEN_GRAPHS.md and docs/MOBILE_CONTROLS.md.
